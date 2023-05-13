@@ -35,3 +35,6 @@ audius_live-*.tar
 npm-debug.log
 /assets/node_modules/
 
+static/tracks
+node_modules 
+assets/vendor
