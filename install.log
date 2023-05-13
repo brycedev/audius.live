@@ -1,0 +1,10 @@
+[16:00:05 2023-05-10] FETCHING Version 2.18.1
+[16:00:05 2023-05-10] CREATING /Users/ghost/.spicetify
+[16:00:05 2023-05-10] DOWNLOADING https://github.com/spicetify/spicetify-cli/releases/download/v2.18.1/spicetify-2.18.1-darwin-arm64.tar.gz
+[16:00:07 2023-05-10] EXTRACTING /Users/ghost/.spicetify/spicetify.tar.gz
+[16:00:07 2023-05-10] SETTING EXECUTABLE PERMISSIONS TO /Users/ghost/.spicetify/spicetify
+[16:00:07 2023-05-10] REMOVING /Users/ghost/.spicetify/spicetify.tar.gz
+[16:00:07 2023-05-10] APPENDING /Users/ghost/.spicetify to PATH in /Users/ghost/.zshrc
+[16:00:07 2023-05-10] Restart your shell to have spicetify in your PATH.
+[16:00:07 2023-05-10] spicetify v2.18.1 was installed successfully to /Users/ghost/.spicetify
+[16:00:07 2023-05-10] Run 'spicetify --help' to get started
