@@ -257,7 +257,7 @@ def generate(audio_path, beat_times=[]):
         )
         scenes.append(
             globals()[f"create_{scene_type}_scene"](
-                folder_path, 0, beat_times[:num_beats]
+                folder_path, random.choice(*range(1,6)), beat_times[:num_beats]
             )
         )
         del beat_times[:num_beats]
@@ -274,8 +274,10 @@ def create_reversey_scene(path, gif_index, beat_times):
         beat_times[i + 1] - beat_times[i] for i in range(len(beat_times) - 1)
     ]
 
+    gif_path = f"gifs/{gif_index}.gif"
+
     gif_clip = (
-        VideoFileClip("giphy.gif")
+        VideoFileClip(gif_path)
         .fx(vfx.loop)
         .resize((1280, 720))
         .set_duration(max(differentials))
@@ -301,7 +303,9 @@ def create_grid_scene(path, gif_index, beat_times=[]):
     grid_counts = [4, 8, 16]
     grid_count = grid_counts[np.random.randint(0, 3)]
 
-    main_clip = VideoFileClip("giphy.gif").margin(5).fx(vfx.loop)
+    gif_path = f"gifs/{gif_index}.gif"
+
+    main_clip = VideoFileClip(gif_path).margin(5).fx(vfx.loop)
     main_clip_flipped_x = main_clip.fx(vfx.mirror_x)
     main_clip_flipped_y = main_clip.fx(vfx.mirror_y)
     main_clip_flipped_x_y = main_clip.fx(vfx.mirror_y).fx(vfx.mirror_x)

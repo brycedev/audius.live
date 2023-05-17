@@ -25,11 +25,22 @@ defmodule AudiusLive.Media do
   def generate_music_video(track) do
     IO.puts("Detecting beats...")
 
-    detection_result =
-      AudiusLive.Snek.detect_beats(Path.absname("priv/static/tracks/#{track["id"]}/audio.mp3"))
+    track_path = Path.absname("priv/static/tracks/#{track["id"]}/audio.mp3")
+
+    detection_result = AudiusLive.Snek.detect_beats(track_path)
+    beat_times = Jason.decode!(elem(detection_result, 1))
+    beat_times = Enum.map(beat_times, fn time -> String.to_float(time) end)
 
     IO.inspect(detection_result)
     IO.puts("Fetching assets...")
     IO.puts("Generating video...")
+
+    _generation_result =
+      AudiusLive.Snek.generate_music_video(
+        track_path,
+        beat_times
+      )
+
+    # IO.inspect(generation_result)
   end
 end

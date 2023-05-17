@@ -38,3 +38,5 @@ npm-debug.log
 priv/static/tracks/
 node_modules 
 assets/vendor
+priv/python/gifs/
+*.DS_Store

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "c792e9e8c884c28155a1465d1f1e8bf1326d699f135ced33d8b91f1bab50c943"
+            "sha256": "d6b18f3fb777b2bb5b9d28a067e7abea46f676eabe4486786dffe7c78f37210d"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -195,6 +195,14 @@
             ],
             "markers": "python_version >= '3.5'",
             "version": "==4.4.2"
+        },
+        "erlport": {
+            "hashes": [
+                "sha256:bbd894e1502a00964bca8a84283048cee599234b5a59fffa21c82e09366a399c",
+                "sha256:f6662a9b141142c1a1234af6cc9d38d7ac1ec841e59495bc1ba61e8b0b94ac6d"
+            ],
+            "index": "pypi",
+            "version": "==0.6"
         },
         "idna": {
             "hashes": [

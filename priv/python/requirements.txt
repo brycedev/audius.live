@@ -1,0 +1,34 @@
+appdirs==1.4.4
+audioread==3.0.0 ; python_version >= '3.6'
+certifi==2023.5.7 ; python_version >= '3.6'
+cffi==1.15.1
+charset-normalizer==3.1.0 ; python_full_version >= '3.7.0'
+decorator==4.4.2 ; python_version >= '3.5'
+erlport==0.6
+idna==3.4 ; python_version >= '3.5'
+imageio==2.28.1 ; python_version >= '3.7'
+imageio-ffmpeg==0.4.8 ; python_version >= '3.5'
+joblib==1.2.0 ; python_version >= '3.7'
+lazy-loader==0.2 ; python_version >= '3.7'
+librosa==0.10.0.post2
+llvmlite==0.40.0 ; python_version >= '3.8'
+moviepy==2.0.0.dev2
+msgpack==1.0.5
+numba==0.57.0 ; python_version >= '3.8'
+numpy==1.24.3
+opencv-python==4.7.0.72
+packaging==23.1 ; python_version >= '3.7'
+pillow==9.5.0 ; python_version >= '3.7'
+pooch==1.6.0 ; python_version >= '3.6'
+proglog==0.1.10
+pycparser==2.21
+pyopengl==3.1.6
+requests==2.30.0
+scikit-learn==1.2.2 ; python_version >= '3.8'
+scipy==1.10.1 ; python_version < '3.12' and python_version >= '3.8'
+soundfile==0.12.1
+soxr==0.3.5 ; python_version >= '3.6'
+threadpoolctl==3.1.0 ; python_version >= '3.6'
+tqdm==4.65.0 ; python_version >= '3.7'
+typing-extensions==4.5.0 ; python_version >= '3.7'
+urllib3==2.0.2 ; python_version >= '3.7'
