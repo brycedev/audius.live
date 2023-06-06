@@ -11,6 +11,8 @@ requests = "*"
 pyopengl = "*"
 opencv-python = "*"
 erlport = "*"
+textblob = "*"
+pytesseract = "*"
 
 [dev-packages]
 

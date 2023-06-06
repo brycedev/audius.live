@@ -36,7 +36,11 @@ npm-debug.log
 /assets/node_modules/
 
 priv/static/tracks/
+priv/static/videos/
+priv/threemotion/public/gifs
+priv/threemotion/public/audio.mp3
 node_modules 
 assets/vendor
 priv/python/gifs/
 *.DS_Store
+.env

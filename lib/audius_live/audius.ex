@@ -13,7 +13,18 @@ defmodule AudiusLive.Audius do
   def track_is_valid?(track) do
     duration = track["duration"]
 
-    if String.contains?(track["title"], ["mix", "Mix"]) || duration > 170 ||
+    query =
+      from(t in AudiusLive.Track,
+        where: t.audius_id == ^track["id"],
+        limit: 1
+      )
+
+    if AudiusLive.Repo.one(query) do
+      false
+    end
+
+    if String.contains?(track["title"], ["mix", "Mix", "remix", "Remix", "edit", "Edit"]) ||
+         duration > 170 ||
          track["is_streamable"] == false do
       false
     else
@@ -22,18 +33,24 @@ defmodule AudiusLive.Audius do
   end
 
   def get_random_track() do
-    words =
-      "priv/static/dictionary.txt"
-      |> Path.expand()
-      |> File.read!()
-      |> String.split(~r/\n/)
+    # random_endpoint = api_url_for_endpoint("/v1/tracks/search") <> "&query=#{word}"
+    all_time_trending_endpoint = api_url_for_endpoint("/v1/tracks/trending") <> "&time=allTime"
+    month_trending_endpoint = api_url_for_endpoint("/v1/tracks/trending") <> "&time=month"
+    underground_trending_endpoint = api_url_for_endpoint("/v1/tracks/trending/underground")
+    week_trending_endpoint = api_url_for_endpoint("/v1/tracks/trending") <> "&time=week"
+    year_trending_endpoint = api_url_for_endpoint("/v1/tracks/trending") <> "&time=year"
 
-    word = Enum.random(words)
+    response =
+      HTTPoison.get!(
+        Enum.random([
+          all_time_trending_endpoint,
+          month_trending_endpoint,
+          underground_trending_endpoint,
+          week_trending_endpoint,
+          year_trending_endpoint
+        ])
+      )
 
-    IO.puts("Searching for track with keyword: #{word}")
-
-    endpoint = api_url_for_endpoint("/v1/tracks/search") <> "&query=#{word}"
-    response = HTTPoison.get!(endpoint)
     req = Jason.decode!(response.body)
 
     track_results = req["data"]
@@ -51,33 +68,16 @@ defmodule AudiusLive.Audius do
     track
   end
 
-  def get_random_trending_track() do
-    endpoint = api_url_for_endpoint("/v1/tracks/trending") <> "&time=month"
-    response = HTTPoison.get!(endpoint)
-    req = Jason.decode!(response.body)
-
-    track = Enum.random(req["data"])
-
-    if !track_is_valid?(track) do
-      get_random_trending_track()
-    end
-
-    track
-  end
-
   def get_stream_redirect(endpoint) do
     response = HTTPoison.get!(endpoint)
     headers = Enum.into(response.headers, %{})
     location = headers["Location"] || headers["location"]
 
     if(location == nil) do
-      IO.puts("Location is nil, retrying...")
-      IO.puts(endpoint)
       get_stream_redirect(endpoint)
     end
 
     if(!String.contains?(location, "tracks/cidstream")) do
-      IO.puts("Location does not contain tracks/cidstream, retrying...")
       get_stream_redirect(endpoint)
     end
 
@@ -96,23 +96,13 @@ defmodule AudiusLive.Audius do
     count = Enum.count(queued_tracks)
 
     if count < 5 do
-      track = get_random_trending_track()
-
-      track_exists = Repo.get_by(Track, audius_id: track["id"])
-
-      if track_exists !== nil do
-        track = get_random_track()
-      end
+      track = get_random_track()
 
       IO.puts("Discovered new track: #{track["title"]} by #{track["user"]["name"]}")
-
-      IO.puts("Fetching stream URL...")
 
       track_id = track["id"]
 
       stream_url = AudiusLive.Audius.get_stream_url(track_id)
-
-      IO.puts("Recording audio stream...")
 
       AudiusLive.Media.record_audio_stream(
         stream_url,
@@ -126,8 +116,6 @@ defmodule AudiusLive.Audius do
         artist: track["user"]["name"],
         title: track["title"]
       })
-
-      AudiusLive.Media.generate_music_video(track)
     end
   end
 end

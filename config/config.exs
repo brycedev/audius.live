@@ -59,11 +59,26 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :ex_aws,
+  access_key_id: System.get_env("R2_ACCESS_KEY_ID"),
+  region: "auto",
+  secret_access_key: System.get_env("R2_SECRET_ACCESS_KEY"),
+  s3: [
+    scheme: "https://",
+    host: "#{System.get_env("R2_ACCOUNT_ID")}.r2.cloudflarestorage.com"
+  ]
+
 # Configure the scheduler (Quantum)
 config :audius_live, AudiusLive.Scheduler,
   jobs: [
-    # Every 5 minutes
-    {"* * * * *", {AudiusLive.Audius, :discover_next_track, []}}
+    # Every minute
+    {"* * * * *", {AudiusLive.Audius, :discover_next_track, []}},
+    # Every 2 minutes
+    {"*/2 * * * *", {AudiusLive.Media, :queue_next_video, []}},
+    # Every 15 minutes
+    {"*/15 * * * *", {AudiusLive.Snek, :fetch_gifs, []}},
+    # Every 3 minutes
+    {"*/3 * * * *", {AudiusLive.Media, :compose_music_video, []}}
   ]
 
 # Import environment specific config. This must remain at the bottom

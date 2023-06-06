@@ -42,7 +42,7 @@ defmodule AudiusLive.Application do
     [
       {:name, {:local, :python_worker}},
       {:worker_module, AudiusLive.Snek},
-      {:size, 4},
+      {:size, 1},
       {:max_overflow, 2}
     ]
   end

@@ -54,7 +54,11 @@ defmodule AudiusLive.MixProject do
       {:jason, "~> 1.4"},
       {:rustler, "~> 0.28.0"},
       {:erlport, "~> 0.10.1"},
-      {:poolboy, "~> 1.5"}
+      {:poolboy, "~> 1.5"},
+      {:ex_aws, "~> 2.4.2"},
+      {:ex_aws_s3, "~> 2.4.0"},
+      {:hackney, "~> 1.18"},
+      {:sweet_xml, "~> 0.7.3"}
     ]
   end
 
