@@ -41,6 +41,43 @@ defmodule AudiusLiveWeb.CoreComponents do
   attr :on_cancel, JS, default: %JS{}
   slot :inner_block, required: true
 
+  def connection_status(assigns) do
+    ~H"""
+    <div
+      id="connection-status"
+      class="hidden rounded-md bg-red-50 p-4 fixed top-1 right-1 w-96 fade-in-scale z-50"
+      js-show={show("#connection-status")}
+      js-hide={hide("#connection-status")}
+    >
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg
+            class="animate-spin -ml-1 mr-3 h-5 w-5 text-red-800"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+            </circle>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            >
+            </path>
+          </svg>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm font-medium text-red-800" role="alert">
+            <%= render_slot(@inner_block) %>
+          </p>
+        </div>
+      </div>
+    </div>
+    """
+  end
+
   def modal(assigns) do
     ~H"""
     <div

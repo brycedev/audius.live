@@ -140,7 +140,7 @@ export async function trinitron() {
   const modelLoader = new GLTFLoader();
 
   const tvModelData = await modelLoader.loadAsync(
-    "https://cdn.dexterslab.sh/sony_trinitron_body.glb"
+    "https://cdn.dexterslab.sh/audiuslive/assets/models/sony_trinitron_body.glb"
   );
 
   tvModel = tvModelData.scene;
@@ -166,7 +166,7 @@ export async function trinitron() {
   tvModel.rotateY(Math.PI);
 
   const tvScreenData = await modelLoader.loadAsync(
-    "https://cdn.dexterslab.sh/sony_trinitron_screen.glb"
+    "https://cdn.dexterslab.sh/audiuslive/assets/models/sony_trinitron_screen.glb"
   );
 
   const tvScreen = tvScreenData.scene;
@@ -208,7 +208,7 @@ export async function magnavox(THREE) {
   const modelLoader = new GLTFLoader();
 
   const tvModelData = await modelLoader.loadAsync(
-    "https://cdn.dexterslab.sh/magnavox_body.glb"
+    "https://cdn.dexterslab.sh/audiuslive/assets/models/magnavox_body.glb"
   );
 
   tvModel = tvModelData.scene;

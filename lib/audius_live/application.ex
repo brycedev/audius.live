@@ -8,19 +8,14 @@ defmodule AudiusLive.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Start the Telemetry supervisor
       AudiusLiveWeb.Telemetry,
-      # Start the Ecto repository
       AudiusLive.Repo,
-      # Start the PubSub system
       {Phoenix.PubSub, name: AudiusLive.PubSub},
-      # Start Finch
       {Finch, name: AudiusLive.Finch},
-      # Start the Endpoint (http/https)
+      AudiusLiveWeb.Presence,
       AudiusLiveWeb.Endpoint,
-      # Start a worker by calling: AudiusLive.Worker.start_link(arg)
-      # {AudiusLive.Worker, arg}
       AudiusLive.Scheduler,
+      { AudiusLive.Clock, name: AudiusLive.Clock},
       :poolboy.child_spec(:worker, python_poolboy_config())
     ]
 
@@ -42,8 +37,8 @@ defmodule AudiusLive.Application do
     [
       {:name, {:local, :python_worker}},
       {:worker_module, AudiusLive.Snek},
-      {:size, 1},
-      {:max_overflow, 2}
+      {:size, 3},
+      {:max_overflow, 4}
     ]
   end
 end

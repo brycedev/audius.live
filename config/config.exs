@@ -71,14 +71,11 @@ config :ex_aws,
 # Configure the scheduler (Quantum)
 config :audius_live, AudiusLive.Scheduler,
   jobs: [
-    # Every minute
     {"* * * * *", {AudiusLive.Audius, :discover_next_track, []}},
-    # Every 2 minutes
     {"*/2 * * * *", {AudiusLive.Media, :queue_next_video, []}},
-    # Every 15 minutes
-    {"*/15 * * * *", {AudiusLive.Snek, :fetch_gifs, []}},
-    # Every 3 minutes
-    {"*/3 * * * *", {AudiusLive.Media, :compose_music_video, []}}
+    {"*/30 * * * *", {AudiusLive.Snek, :fetch_gifs, []}},
+    # # Every 3 minutes
+    # {"*/3 * * * *", {AudiusLive.Media, :compose_music_video, []}}
   ]
 
 # Import environment specific config. This must remain at the bottom

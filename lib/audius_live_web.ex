@@ -1,22 +1,4 @@
 defmodule AudiusLiveWeb do
-  @moduledoc """
-  The entrypoint for defining your web interface, such
-  as controllers, components, channels, and so on.
-
-  This can be used in your application as:
-
-      use AudiusLiveWeb, :controller
-      use AudiusLiveWeb, :html
-
-  The definitions below will be executed for every controller,
-  component, etc, so keep them short and clean, focused
-  on imports, uses and aliases.
-
-  Do NOT define functions inside the quoted expressions
-  below. Instead, define additional modules and import
-  those modules here.
-  """
-
   def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
 
   def router do
@@ -30,15 +12,10 @@ defmodule AudiusLiveWeb do
     end
   end
 
-  def channel do
-    quote do
-      use Phoenix.Channel
-    end
-  end
-
   def controller do
     quote do
       use Phoenix.Controller,
+        namespace: AudiusLiveWeb,
         formats: [:html, :json],
         layouts: [html: AudiusLiveWeb.Layouts]
 
@@ -49,10 +26,18 @@ defmodule AudiusLiveWeb do
     end
   end
 
-  def live_view do
+  def live_view(opts \\ []) do
     quote do
+      @opts Keyword.merge(
+              [
+                layout: {AudiusLiveWeb.Layouts, :live},
+                container: {:div, class: "relative h-screen flex overflow-hidden bg-white"}
+              ],
+              unquote(opts)
+            )
       use Phoenix.LiveView,
-        layout: {AudiusLiveWeb.Layouts, :app}
+                layout: {AudiusLiveWeb.Layouts, :live},
+                container: {:div, []}
 
       unquote(html_helpers())
     end
@@ -79,10 +64,18 @@ defmodule AudiusLiveWeb do
     end
   end
 
+  def channel do
+    quote do
+      use Phoenix.Channel
+      import AudiusLiveWeb.Gettext
+    end
+  end
+
   defp html_helpers do
     quote do
       # HTML escaping functionality
-      import Phoenix.HTML
+      use Phoenix.HTML
+      import Phoenix.Component
       # Core UI components and translation
       import AudiusLiveWeb.CoreComponents
       import AudiusLiveWeb.Gettext
@@ -107,6 +100,10 @@ defmodule AudiusLiveWeb do
   @doc """
   When used, dispatch to the appropriate controller/view/etc.
   """
+  defmacro __using__({which, opts}) when is_atom(which) do
+    apply(__MODULE__, which, [opts])
+  end
+
   defmacro __using__(which) when is_atom(which) do
     apply(__MODULE__, which, [])
   end

@@ -1,36 +1,23 @@
-// If you want to use Phoenix channels, run `mix help phx.gen.channel`
-// to get started and then uncomment the line below.
-// import "./user_socket.js"
-
-// Establish Phoenix Socket and LiveView configuration.
 import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
 import * as THREE from "three";
 import { EffectComposer, RenderPass } from "postprocessing";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { trinitron, magnavox } from "./tvs";
+import { trinitron } from "./tvs";
 
-let csrfToken = document
-  .querySelector("meta[name='csrf-token']")
-  .getAttribute("content");
-let liveSocket = new LiveSocket("/live", Socket, {
-  params: { _csrf_token: csrfToken },
-});
-
-// connect if there are any LiveViews on the page
-liveSocket.connect();
-
-// expose liveSocket on window for web console debug logs and latency simulation:
-liveSocket.enableDebug();
-// >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
-// >> liveSocket.disableLatencySim()
-window.liveSocket = liveSocket;
-
+// three scene
 let camera, composer, renderer, scene;
+// video
 let video, videoMaterial, videoTexture;
+// state
 let videoIsPlaying = false;
-let tvModel, tvScreenModel;
+// models
+let marbleColumn, tvModel, tvScreenModel;
+// controls
+let orbitControls;
+//
+let T = { ticking: false };
 
 function animation(time) {
   if (video && video.readyState === video.HAVE_ENOUGH_DATA) {
@@ -73,7 +60,7 @@ async function init() {
   setupControls();
 
   const backgroundTexture = new THREE.TextureLoader().load(
-    "https://cdn.dexterslab.sh/vroom.webp"
+    "https://cdn.dexterslab.sh/audiuslive/assets/images/vroom.webp"
   );
   backgroundTexture.crossOrigin = "anonymous";
 
@@ -121,7 +108,7 @@ async function init() {
   let modelLoader = new GLTFLoader();
 
   const marbleColumnData = await modelLoader.loadAsync(
-    "https://cdn.dexterslab.sh/marble_pillar.glb"
+    "https://cdn.dexterslab.sh/audiuslive/assets/models/marble_pillar.glb"
   );
 
   marbleColumn = marbleColumnData.scene.children[0];
@@ -185,6 +172,23 @@ function setupEventListeners() {
   );
 }
 
+function setupClock() {
+  T = { ticking: false };
+  window.addEventListener("phx:clockUpdated", (e) => {
+    if (e.detail.clock_status == "running" && !T.ticking) {
+      T.ticking = true;
+      T.timerInterval = setInterval(function () {}, 1000);
+      video.currentTime = e.detail.time;
+    }
+
+    if (e.detail.clock_status == "stopped") {
+      clearInterval(T.timerInterval);
+      T.ticking = false;
+      video.stop();
+    }
+  });
+}
+
 function playVideo() {
   if (videoIsPlaying) return;
   video.play();
@@ -193,4 +197,5 @@ function playVideo() {
 
 (async () => {
   await init();
+  setupClock();
 })();

@@ -31,7 +31,7 @@ config :audius_live, AudiusLiveWeb.Endpoint,
 config :audius_live, AudiusLiveWeb.Endpoint,
   live_reload: [
     patterns: [
-      ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
+      ~r"priv/js/.*(js)$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/audius_live_web/(controllers|live|components)/.*(ex|heex)$"
     ]
