@@ -75,7 +75,7 @@ config :audius_live, AudiusLive.Scheduler,
     {"*/2 * * * *", {AudiusLive.Media, :queue_next_video, []}},
     {"*/30 * * * *", {AudiusLive.Snek, :fetch_gifs, []}},
     # # Every 3 minutes
-    # {"*/3 * * * *", {AudiusLive.Media, :compose_music_video, []}}
+    {"*/3 * * * *", {AudiusLive.Media, :compose_music_video, []}}
   ]
 
 # Import environment specific config. This must remain at the bottom
