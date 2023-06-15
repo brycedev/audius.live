@@ -14,17 +14,17 @@
 	"dependencies": {
 		"@react-three/drei": "^9.68.6",
 		"@react-three/fiber": "^8.8.10",
-		"@remotion/cli": "3.3.98",
-		"@remotion/media-utils": "3.3.98",
-		"@remotion/three": "3.3.98",
+		"@remotion/cli": "3.3.100",
+		"@remotion/media-utils": "3.3.100",
+		"@remotion/three": "3.3.100",
 		"react": "^18.0.0",
 		"react-dom": "^18.0.0",
-		"remotion": "3.3.98",
+		"remotion": "3.3.100",
 		"three": "^0.145.0",
 		"zustand": "^4.3.8"
 	},
 	"devDependencies": {
-		"@remotion/eslint-config": "3.3.98",
+		"@remotion/eslint-config": "3.3.100",
 		"@types/react": "^18.0.26",
 		"@types/three": "^0.144.0",
 		"@types/web": "^0.0.75",

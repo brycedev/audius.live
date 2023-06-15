@@ -6,8 +6,8 @@ defmodule AudiusLive.Clock do
     GenServer.start_link(__MODULE__, :ok, opts)
   end
 
-  def start_clock(clock) do
-    GenServer.call(clock, :start)
+  def start_clock(clock, duration) do
+    GenServer.call(clock, {:start, duration})
   end
 
   def stop_clock(clock) do
@@ -24,39 +24,42 @@ defmodule AudiusLive.Clock do
 
   @impl true
   def init(:ok) do
-    {:ok, {:stopped, ~T[00:00:00]}}
+    {:ok, {:stopped, 0, 0}}
   end
 
   @impl true
-  def handle_call(:start, _from, {_status, time}) do
+  def handle_call({:start, length}, _from, {_status, time,_duration}) do
     Process.send_after(self(), :tick, 1000)
-    {:reply, :running, {:running, time}}
+    {:reply, :running, {:running, time, length}}
   end
 
   @impl true
-  def handle_call(:stop, _from, {_status, time}) do
-    {:reply, :stopped, {:stopped, time}}
+  def handle_call(:stop, _from, {_status, time, duration}) do
+    {:reply, :stopped, {:stopped, time, 0}}
   end
 
   @impl true
-  def handle_info(:tick, {status, time} = clock) do
-    if status == :running do
-      Process.send_after(self(), :tick, 1000)
-      notify()
-      {:noreply, {status, Time.add(time, 1, :second)}}
-    else
-      {:noreply, clock}
-    end
-  end
-
-  @impl true
-  def handle_call(:state, _from, clock) do
+  def handle_call(:state, _from, clock ) do
     {:reply, clock, clock}
   end
 
   @impl true
   def handle_call(:reset, _from, _clock) do
-    {:reply, :reset, {:stopped, ~T[00:00:00]}}
+    {:reply, :reset, {:stopped, 0, 0}}
+  end
+
+  @impl true
+  def handle_info(:tick, {status, time, duration} = clock) do
+    if time < duration do 
+      Process.send_after(self(), :tick, 1000)
+      notify()
+      {:noreply, {status, time + 1, duration}}
+    else
+      if time >= duration do
+        notify()
+        {:noreply, {:stopped, time, 0}}
+      end
+    end
   end
 
   def subscribe() do
@@ -65,5 +68,9 @@ defmodule AudiusLive.Clock do
 
   def notify() do
     PubSub.broadcast(AudiusLive.PubSub, "audius_live:clock", :clock_updated)
+  end
+
+  def running?() do
+    GenServer.call(__MODULE__, :state) == {:running }
   end
 end

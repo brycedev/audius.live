@@ -17,7 +17,7 @@ let marbleColumn, tvModel, tvScreenModel;
 // controls
 let orbitControls;
 //
-let T = { ticking: false };
+let T = { currentTime: 0, status: "stopped", ticking: false };
 
 function animation(time) {
   if (video && video.readyState === video.HAVE_ENOUGH_DATA) {
@@ -173,25 +173,49 @@ function setupEventListeners() {
 }
 
 function setupClock() {
+  let csrfToken = document
+    .querySelector("meta[name='csrf-token']")
+    .getAttribute("content");
+  let liveSocket = new LiveSocket("/live", Socket, {
+    params: { _csrf_token: csrfToken },
+  });
+
+  const stop = (interval) => {
+    clearInterval(interval);
+    T.ticking = false;
+    video.pause();
+  };
+
   T = { ticking: false };
   window.addEventListener("phx:clockUpdated", (e) => {
-    if (e.detail.clock_status == "running" && !T.ticking) {
+    T.currentTime = e.detail.time;
+    T.status = e.detail.status;
+    if (!videoIsPlaying) video.currentTime = T.currentTime;
+
+    if (T.status == "running" && !T.ticking) {
       T.ticking = true;
-      T.timerInterval = setInterval(function () {}, 1000);
-      video.currentTime = e.detail.time;
+      T.interval = setInterval(function () {}, 1000);
     }
 
-    if (e.detail.clock_status == "stopped") {
-      clearInterval(T.timerInterval);
-      T.ticking = false;
-      video.stop();
+    if (T.status == "stopped") {
+      stop(T.interval);
     }
   });
+
+  window.addEventListener("phx:videoUpdated", (e) => {
+    const videoUrl = e.detail.video_url;
+    video.src = videoUrl;
+    video.load();
+  });
+
+  liveSocket.connect();
+  liveSocket.enableDebug();
+  window.liveSocket = liveSocket;
 }
 
 function playVideo() {
   if (videoIsPlaying) return;
-  video.play();
+  if (T.status == "running") video.play();
   videoIsPlaying = true;
 }
 

@@ -13,6 +13,8 @@ defmodule AudiusLive.Audius do
   def track_is_valid?(track) do
     duration = track["duration"]
 
+    IO.puts("Checking track validity: #{track["duration"]}")
+    
     query =
       from(t in AudiusLive.Track,
         where: t.audius_id == ^track["id"],
@@ -23,13 +25,17 @@ defmodule AudiusLive.Audius do
       false
     end
 
-    if String.contains?(track["title"], ["mix", "Mix", "remix", "Remix", "edit", "Edit"]) ||
-         duration > 170 ||
-         track["is_streamable"] == false do
+    if duration > 160 do
+      IO.puts("Track duration is too long: #{duration}")
       false
-    else
-      true
     end
+
+    if track["is_streamable"] == false do
+      false
+    end
+
+    true
+
   end
 
   def get_random_track() do

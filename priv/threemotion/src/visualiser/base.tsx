@@ -1,4 +1,4 @@
-import {Video, staticFile} from 'remotion';
+import {Video, random, staticFile} from 'remotion';
 import {useVideoConfig} from 'remotion';
 import {useRef} from 'react';
 import {ThreeCanvas, useVideoTexture} from '@remotion/three';
@@ -8,7 +8,8 @@ const BaseVisualiser = ({index = 0}) => {
 	const video = useRef<HTMLVideoElement>(null);
 	const {width, height} = useVideoConfig();
 	const texture = useVideoTexture(video);
-	const gif = staticFile(`gifs/${index}.mp4`);
+	const randomGifIndex = Math.floor(random(index) * 31);
+	const gif = staticFile(`gifs/${randomGifIndex}.mp4`);
 
 	return (
 		<>
