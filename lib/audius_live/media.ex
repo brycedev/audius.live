@@ -32,7 +32,6 @@ defmodule AudiusLive.Media do
 
     detection_result = AudiusLive.Snek.detect_beats(track_path)
     beat_times = Jason.decode!(elem(detection_result, 1))
-    beat_times = Enum.map(beat_times, fn time -> String.to_float(time) end)
     File.write!("priv/static/tracks/#{track_id}/beats.json", Jason.encode!(beat_times))
   end
 
@@ -43,7 +42,7 @@ defmodule AudiusLive.Media do
     json_file = File.read!("priv/static/gifs.json")
     available_gifs = Jason.decode!(json_file)["urls"]
 
-    gifs = Enum.take_random(available_gifs, 20)
+    gifs = Enum.take_random(available_gifs, 32)
 
     download_path = Path.absname("priv/static/videos/#{track_id}/gifs")
     File.mkdir_p!(download_path)
@@ -114,7 +113,12 @@ defmodule AudiusLive.Media do
     if track = AudiusLive.Repo.one(query) do
       detect_beats(track.audius_id)
       generate_video(track.audius_id)
-      upload_video_to_r2(track.audius_id)
+      if(File.exists?("priv/static/videos/#{track.audius_id}/musicvideo.mp4")) do
+        upload_video_to_r2(track.audius_id)
+        changeset = Track.changeset(track, %{has_music_video: true})
+
+        AudiusLive.Repo.update!(changeset)
+      end
 
       System.cmd("rm", [
         "-rf",
@@ -125,10 +129,7 @@ defmodule AudiusLive.Media do
         "-rf",
         "priv/static/tracks/#{track.audius_id}"
       ])
-
-      changeset = Track.changeset(track, %{has_music_video: true})
-
-      AudiusLive.Repo.update!(changeset)
+      
     end
   end
 
