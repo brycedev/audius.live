@@ -12,10 +12,9 @@ defmodule AudiusLive.Application do
       AudiusLive.Repo,
       {Phoenix.PubSub, name: AudiusLive.PubSub},
       {Finch, name: AudiusLive.Finch},
-      AudiusLiveWeb.Presence,
       AudiusLiveWeb.Endpoint,
       AudiusLive.Scheduler,
-      { AudiusLive.Clock, name: AudiusLive.Clock},
+      { AudiusLive.Radio, name: AudiusLive.Radio},
       :poolboy.child_spec(:worker, python_poolboy_config())
     ]
 

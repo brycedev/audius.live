@@ -39,6 +39,8 @@ priv/static/tracks/
 priv/static/videos/
 priv/threemotion/public/gifs
 priv/threemotion/public/audio.mp3
+priv/threemotion/public/beats.json
+*.mp4
 node_modules 
 assets/vendor
 priv/python/gifs/

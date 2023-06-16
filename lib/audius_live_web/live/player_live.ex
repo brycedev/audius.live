@@ -1,11 +1,11 @@
 defmodule AudiusLiveWeb.PlayerLive do
   use AudiusLiveWeb, :live_view
+  import Ecto.Query
 
   use Phoenix.Component
 
-  alias AudiusLive.Clock
+  alias AudiusLive.Radio
   alias AudiusLive.Track
-  alias AudiusLive.VideoPlayer
 
   def render(assigns) do
     ~H"""
@@ -18,19 +18,16 @@ defmodule AudiusLiveWeb.PlayerLive do
   def mount(_params, _session, socket) do
 
     if connected?(socket) do
-      Clock.subscribe()
-      if !Clock.running?() do
-        Clock.start_clock(AudiusLive.Clock, 20)
-      end
+      Radio.subscribe()
     end
 
-    {status, time, duration} = Clock.get_clock_state(AudiusLive.Clock)
+    {status, time, duration} = Radio.get_clock_state(AudiusLive.Radio)
 
     {:ok, assign(socket, status: status, time: time, duration: duration)}
   end
 
   def handle_info(:clock_updated, socket) do
-    {status, time, duration} = Clock.get_clock_state(AudiusLive.Clock)
+    {status, time, duration} = Radio.get_clock_state(AudiusLive.Radio)
 
     socket = assign(socket, status: status, time: time, duration: duration)
 
@@ -41,8 +38,31 @@ defmodule AudiusLiveWeb.PlayerLive do
     })}
   end
 
+  def handle_info(:track_updated, socket) do 
+    {status, time, duration} = Radio.get_clock_state(AudiusLive.Radio)
+
+    socket = assign(socket, status: status, time: time, duration: duration)
+
+    playing_track_query =
+      from(t in Track,
+        where: t.status == :playing,
+        limit: 1
+      )
+
+    
+
+    track = AudiusLive.Repo.one(playing_track_query)
+
+    {:noreply, push_event(socket, "trackUpdated", %{
+      url: "https://cdn.dexterslab.sh/dexterslab/audiuslive/videos/#{track.audius_id}.mp4",
+      status: status,
+      time: time,
+      duration: duration
+    })}
+  end
+
   defp track_title(%{artist: artist}) do
-    "(Now Playing) some #{artist}"
+    "(Now Playing) #{artist}"
   end
 
 end

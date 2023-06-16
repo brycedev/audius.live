@@ -11,7 +11,7 @@ import Config
 # before starting your production server.
 config :audius_live, AudiusLiveWeb.Endpoint,
  cache_static_manifest: "priv/static/cache_manifest.json",
- url: [host: "audius.live", port: 80],
+ url: [host: "audius.live", port: 80]
 
 # Configures Swoosh API Client
 config :swoosh, api_client: Swoosh.ApiClient.Finch, finch_name: AudiusLive.Finch

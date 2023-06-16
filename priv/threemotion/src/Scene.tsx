@@ -1,6 +1,5 @@
-import {staticFile, useCurrentFrame} from 'remotion';
+import {staticFile} from 'remotion';
 import {Audio} from 'remotion';
-import {useVideoConfig} from 'remotion';
 import React from 'react';
 import BaseVisualiser from './visualiser/base';
 import {Series} from 'remotion';

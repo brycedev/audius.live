@@ -12,8 +12,6 @@ defmodule AudiusLive.Audius do
 
   def track_is_valid?(track) do
     duration = track["duration"]
-
-    IO.puts("Checking track validity: #{track["duration"]}")
     
     query =
       from(t in AudiusLive.Track,
@@ -25,7 +23,7 @@ defmodule AudiusLive.Audius do
       false
     end
 
-    if duration > 160 do
+    if duration > 150 do
       IO.puts("Track duration is too long: #{duration}")
       false
     end
@@ -97,11 +95,11 @@ defmodule AudiusLive.Audius do
   end
 
   def discover_next_track() do
-    queued_tracks = Repo.all(from(t in Track, where: t.is_queued == true))
+    backlog = Repo.all(from(t in Track, where: t.has_music_video == false))
 
-    count = Enum.count(queued_tracks)
+    count = Enum.count(backlog)
 
-    if count < 5 do
+    if count < 10 do
       track = get_random_track()
 
       IO.puts("Discovered new track: #{track["title"]} by #{track["user"]["name"]}")
@@ -120,6 +118,7 @@ defmodule AudiusLive.Audius do
       Repo.insert(%Track{
         audius_id: track["id"],
         artist: track["user"]["name"],
+        duration: track["duration"],
         title: track["title"]
       })
     end

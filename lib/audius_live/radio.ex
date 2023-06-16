@@ -1,4 +1,4 @@
-defmodule AudiusLive.Clock do
+defmodule AudiusLive.Radio do
   use GenServer
   alias Phoenix.PubSub
 
@@ -34,7 +34,7 @@ defmodule AudiusLive.Clock do
   end
 
   @impl true
-  def handle_call(:stop, _from, {_status, time, duration}) do
+  def handle_call(:stop, _from, {_status, time, _duration}) do
     {:reply, :stopped, {:stopped, time, 0}}
   end
 
@@ -49,7 +49,7 @@ defmodule AudiusLive.Clock do
   end
 
   @impl true
-  def handle_info(:tick, {status, time, duration} = clock) do
+  def handle_info(:tick, {status, time, duration}) do
     if time < duration do 
       Process.send_after(self(), :tick, 1000)
       notify()
@@ -57,13 +57,25 @@ defmodule AudiusLive.Clock do
     else
       if time >= duration do
         notify()
+        bumper_and_next()
         {:noreply, {:stopped, time, 0}}
       end
     end
   end
 
+  def bumper_and_next() do
+    # client will show a bumper for 7 seconds
+    # then send a message to play the next track
+    Process.send_after(self(), :send_next_track, 7000)
+  end
+
+  def send_next_track() do 
+    AudiusLive.Media.play_next_video()
+  end
+
   def subscribe() do
     PubSub.subscribe(AudiusLive.PubSub, "audius_live:clock")
+    PubSub.subscribe(AudiusLive.PubSub, "audius_live:track")
   end
 
   def notify() do
