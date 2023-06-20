@@ -19,20 +19,22 @@ defmodule AudiusLive.Audius do
         limit: 1
       )
 
+    is_valid = true
+
     if AudiusLive.Repo.one(query) do
-      false
+      is_valid = false
     end
 
     if duration > 150 do
       IO.puts("Track duration is too long: #{duration}")
-      false
+      is_valid = false
     end
 
     if track["is_streamable"] == false do
-      false
+      is_valid = false
     end
 
-    true
+    is_valid
 
   end
 

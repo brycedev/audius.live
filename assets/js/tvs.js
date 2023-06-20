@@ -10,9 +10,7 @@ function generateVideoMesh(tvScreen) {
   video.crossOrigin = "anonymous";
   video.loop = true;
   video.load();
-  video.addEventListener("play", function () {
-    this.currentTime = 0;
-  });
+  video.play();
 
   let videoTexture = new THREE.VideoTexture(video);
   videoTexture.crossOrigin = "anonymous";
@@ -21,10 +19,10 @@ function generateVideoMesh(tvScreen) {
     uniforms: {
       tDiffuse: { value: videoTexture },
       time: { value: 0.0 },
-      distortion: { value: 3.0 },
-      distortion2: { value: 4.0 },
-      speed: { value: 0.2 },
-      rollSpeed: { value: 0.01 },
+      distortion: { value: 0.57 },
+      distortion2: { value: 0.57 },
+      speed: { value: 0.1 },
+      rollSpeed: { value: 0.0 },
     },
     vertexShader: `
     varying vec2 vUv;
@@ -172,6 +170,7 @@ export async function trinitron() {
   const tvScreen = tvScreenData.scene;
   tvScreen.castShadow = true;
   tvScreen.receiveShadow = true;
+  tvScreen.transparent = true;
 
   tvScreen.scale.multiplyScalar(41.7 / maxAxis);
   tvScreen.position.copy(tvCenter).multiplyScalar(-1);
@@ -182,11 +181,13 @@ export async function trinitron() {
   tvScreen.traverse(function (child) {
     if (child.isMesh === true) {
       child.material = new THREE.MeshPhysicalMaterial({
-        metalness: 0.8,
-        thickness: 0.12,
-        roughness: 0.1,
-        transmission: 1,
-        reflectivity: 1,
+        metalness: 0.02,
+        thickness: 0.07,
+        roughness: 0.07,
+        transmission: 1.05,
+        reflectivity: 0.04,
+        transparent: true,
+        opacity: 0.4,
       });
       child.material.needsUpdate = true;
     }

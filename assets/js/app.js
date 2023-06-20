@@ -117,7 +117,6 @@ async function init() {
 
   marbleColumn.scale.multiplyScalar(2.8);
   marbleColumn.scale.x *= 1.4;
-  // marbleColumn.scale.z *= 1.8;
 
   scene.add(marbleColumn);
 
