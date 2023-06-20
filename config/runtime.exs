@@ -13,7 +13,6 @@ end
 
 if config_env() == :prod do
   config :audius_live, AudiusLive.Repo,
-    ssl: true,
     hostname: System.get_env("DATABASE_HOST"),
     port: System.get_env("DATABASE_PORT"),
     username: System.get_env("DATABASE_USERNAME"),
