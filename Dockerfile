@@ -65,11 +65,13 @@ COPY config/runtime.exs config/
 COPY rel rel
 RUN mix release
 
+COPY priv/python _build/${MIX_ENV}/rel/audius_live
+
 # start a new build stage so that the final image will only contain
 # the compiled release and other runtime necessities
 FROM ${RUNNER_IMAGE}
 
-RUN apt-get update -y && apt-get install -y libstdc++6 openssl libncurses5 locales python3 python3-pip \
+RUN apt-get update -y && apt-get install -y libstdc++6 openssl libncurses5 locales python3 \
   && apt-get clean && rm -f /var/lib/apt/lists/*_*
 
 # Set the locale
@@ -81,8 +83,6 @@ ENV LC_ALL en_US.UTF-8
 
 WORKDIR "/app"
 
-RUN cd /app/priv/python && pip install -r requirements.txt
-
 RUN chown nobody /app
 
 # set runner ENV
@@ -90,6 +90,8 @@ ENV MIX_ENV="prod"
 
 # Only copy the final release from the build stage
 COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/audius_live ./
+
+RUN cd priv/python && python -m pip install -r requirements.txt
 
 USER nobody
 
