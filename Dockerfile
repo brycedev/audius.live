@@ -81,7 +81,7 @@ ENV LC_ALL en_US.UTF-8
 
 WORKDIR "/app"
 
-RUN cd priv/python && pip install -r requirements.txt
+RUN cd /app/priv/python && pip install -r requirements.txt
 
 RUN chown nobody /app
 
