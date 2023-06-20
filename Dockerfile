@@ -1,17 +1,4 @@
-# Find eligible builder and runner images on Docker Hub. We use Ubuntu/Debian
-# instead of Alpine to avoid DNS resolution issues in production.
-#
-# https://hub.docker.com/r/hexpm/elixir/tags?page=1&name=ubuntu
-# https://hub.docker.com/_/ubuntu?tab=tags
-#
-# This file is based on these images:
-#
-#   - https://hub.docker.com/r/hexpm/elixir/tags - for the build image
-#   - https://hub.docker.com/_/debian?tab=tags&page=1&name=bullseye-20230522-slim - for the release image
-#   - https://pkgs.org/ - resource for finding needed packages
-#   - Ex: hexpm/elixir:1.14.5-erlang-26.0.1-debian-bullseye-20230522-slim
-#
-ARG ELIXIR_VERSION=1.14.5
+ARG ELIXIR_VERSION=1.15.0
 ARG OTP_VERSION=26.0.1
 ARG DEBIAN_VERSION=bullseye-20230522-slim
 
@@ -69,7 +56,7 @@ RUN mix release
 # the compiled release and other runtime necessities
 FROM ${RUNNER_IMAGE}
 
-RUN apt-get update -y && apt-get install -y libstdc++6 openssl libncurses5 locales git \
+RUN apt-get update -y && apt-get install -y libstdc++6 openssl libncurses5 locales \
   && apt-get clean && rm -f /var/lib/apt/lists/*_*
 
 # Set the locale
@@ -91,3 +78,7 @@ COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/audius_live .
 USER nobody
 
 CMD ["/app/bin/server"]
+
+# Appended by flyctl
+ENV ECTO_IPV6 true
+ENV ERL_AFLAGS "-proto_dist inet6_tcp"

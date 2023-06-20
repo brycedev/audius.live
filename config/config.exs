@@ -74,7 +74,6 @@ config :audius_live, AudiusLive.Scheduler,
     {"* * * * *", {AudiusLive.Audius, :discover_next_track, []}},
     {"*/2 * * * *", {AudiusLive.Media, :queue_ready_video, []}},
     {"*/30 * * * *", {AudiusLive.Snek, :fetch_gifs, []}},
-    # # Every 3 minutes
     {"*/3 * * * *", {AudiusLive.Media, :compose_music_video, []}}
   ]
 
