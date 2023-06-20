@@ -86,6 +86,8 @@ RUN chown nobody /app
 # set runner ENV
 ENV MIX_ENV="prod"
 
+ENV NUMBA_CACHE_DIR=/tmp
+
 # Only copy the final release from the build stage
 COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/audius_live ./
 COPY --from=builder --chown=nobody:root /app/priv/python/requirements.txt ./
