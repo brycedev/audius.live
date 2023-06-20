@@ -114,7 +114,7 @@ defmodule AudiusLive.Media do
     if track = AudiusLive.Repo.one(query) do
       detect_beats(track.audius_id)
       generate_video(track.audius_id)
-      if(File.exists?("priv/static/videos/#{track.audius_id}/musicvideo.mp4")) do
+      if File.exists?("priv/static/videos/#{track.audius_id}/musicvideo.mp4") do
         upload_video_to_r2(track.audius_id)
         changeset = Track.changeset(track, %{has_music_video: true})
 

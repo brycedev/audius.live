@@ -77,11 +77,11 @@ defmodule AudiusLive.Audius do
     headers = Enum.into(response.headers, %{})
     location = headers["Location"] || headers["location"]
 
-    if(location == nil) do
+    if location == nil do
       get_stream_redirect(endpoint)
     end
 
-    if(!String.contains?(location, "tracks/cidstream")) do
+    if !String.contains?(location, "tracks/cidstream") do
       get_stream_redirect(endpoint)
     end
 

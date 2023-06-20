@@ -1,4 +1,7 @@
 defmodule AudiusLive.Snek do
+  @moduledoc """
+  This module is responsible for communicating with the Python code.
+  """
   use GenServer
 
   @timeout 60_000
@@ -17,7 +20,7 @@ defmodule AudiusLive.Snek do
       [:code.priv_dir(:audius_live), "python"]
       |> Path.join()
 
-    with {:ok, pid} <- :python.start([{:python_path, to_charlist(path)}, {:python, 'python3'}]) do
+    {:ok, pid} <- :python.start([{:python_path, to_charlist(path)}, {:python, 'python3'}]) do
       {:ok, pid}
     end
   end

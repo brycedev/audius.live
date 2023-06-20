@@ -1,4 +1,9 @@
 defmodule AudiusLive.Radio do
+  @moduledoc """
+  This module implements a GenServer that acts as a clock for the radio.
+  It is started by the application supervisor and is responsible for
+  keeping track of the current time and duration of the current track.
+  """
   use GenServer
   alias Phoenix.PubSub
 
@@ -28,7 +33,7 @@ defmodule AudiusLive.Radio do
   end
 
   @impl true
-  def handle_call({:start, length}, _from, {_status, time,_duration}) do
+  def handle_call({:start, length}, _from, {_status, time, duration}) do
     Process.send_after(self(), :tick, 1000)
     {:reply, :running, {:running, time, length}}
   end

@@ -14,7 +14,7 @@ defmodule AudiusLive.Application do
       {Finch, name: AudiusLive.Finch},
       AudiusLiveWeb.Endpoint,
       AudiusLive.Scheduler,
-      { AudiusLive.Radio, name: AudiusLive.Radio},
+      {AudiusLive.Radio, name: AudiusLive.Radio},
       :poolboy.child_spec(:worker, python_poolboy_config())
     ]
 
