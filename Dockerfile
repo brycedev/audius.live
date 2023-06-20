@@ -94,4 +94,4 @@ RUN python3 -m pip install -r requirements.txt
 
 USER nobody
 
-CMD ["/app/bin/server"]
+CMD ["sh", "-c", "/app/bin/migrate && /app/bin/server"]
