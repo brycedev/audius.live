@@ -65,11 +65,30 @@ defmodule AudiusLive.Audius do
 
     track = Enum.random(track_results)
 
-    if !track_is_valid?(track) do
+    if track_is_valid?(track) do
+      Repo.insert(%Track{
+        audius_id: track["id"],
+        artist: track["user"]["name"],
+        duration: track["duration"],
+        title: track["title"]
+      })
+
+      IO.puts("Discovered new track: #{track["title"]} by #{track["user"]["name"]}")
+
+      track_id = track["id"]
+
+      stream_url = AudiusLive.Audius.get_stream_url(track_id)
+
+      AudiusLive.Media.record_audio_stream(
+        stream_url,
+        track_id,
+        track["duration"],
+        "priv/static/tracks/#{track_id}/audio.mp3"
+      )
+      
+    else
       get_random_track()
     end
-
-    track
   end
 
   def get_stream_redirect(endpoint) do
@@ -100,27 +119,7 @@ defmodule AudiusLive.Audius do
     count = Enum.count(backlog)
 
     if count < 10 do
-      track = get_random_track()
-
-      IO.puts("Discovered new track: #{track["title"]} by #{track["user"]["name"]}")
-
-      track_id = track["id"]
-
-      stream_url = AudiusLive.Audius.get_stream_url(track_id)
-
-      AudiusLive.Media.record_audio_stream(
-        stream_url,
-        track_id,
-        track["duration"],
-        "priv/static/tracks/#{track_id}/audio.mp3"
-      )
-
-      Repo.insert(%Track{
-        audius_id: track["id"],
-        artist: track["user"]["name"],
-        duration: track["duration"],
-        title: track["title"]
-      })
+      get_random_track()
     end
   end
 end
