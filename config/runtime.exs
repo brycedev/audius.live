@@ -19,7 +19,7 @@ if config_env() == :prod do
     username: System.get_env("DATABASE_USERNAME"),
     password: System.get_env("DATABASE_PASSWORD"),
     database: System.get_env("DATABASE_NAME"),
-    socket_options: []
+    socket_options: [],
     priv: "priv/repo"
 
   # The secret key base is used to sign/encrypt cookies and other secrets.
