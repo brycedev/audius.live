@@ -3,10 +3,8 @@ import * as THREE from "three";
 
 function generateVideoMesh(tvScreen) {
   let video = document.createElement("video");
-  // video.src = "https://cdn.dexterslab.sh/street.mp4";
-  // video.src = "https://cdn.dexterslab.sh/waves.mp4";
-  video.src =
-    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+
+  video.src = "https://cdn.dexterslab.sh/audiuslive/assets/bumpers/og.mp4";
   video.crossOrigin = "anonymous";
   video.loop = true;
   video.load();
