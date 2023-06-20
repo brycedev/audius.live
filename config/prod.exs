@@ -11,7 +11,7 @@ import Config
 # before starting your production server.
 config :audius_live, AudiusLiveWeb.Endpoint,
  cache_static_manifest: "priv/static/cache_manifest.json",
- url: [host: "audius.live", port: 443],
+ url: [host: System.get_env("PHX_HOST"), port: 443],
  force_ssl: [rewrite_on: [:x_forwarded_proto]]
 
 # Configures Swoosh API Client

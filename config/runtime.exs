@@ -12,22 +12,14 @@ if System.get_env("PHX_SERVER") do
 end
 
 if config_env() == :prod do
-  database_url =
-    System.get_env("DATABASE_URL") ||
-      raise """
-      environment variable DATABASE_URL is missing.
-      For example: ecto://USER:PASS@HOST/DATABASE
-      """
-
-  replica_url = System.get_env("REPLICA_DATABASE_URL") || database_url
-
-  maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
-
   config :audius_live, AudiusLive.Repo,
-    # ssl: true,
-    url: replica_url,
-    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
-    socket_options: if(maybe_ipv6, do: [:inet6], else: []),
+    ssl: true,
+    hostname: System.get_env("DATABASE_HOST"),
+    port: System.get_env("DATABASE_PORT"),
+    username: System.get_env("DATABASE_USERNAME"),
+    password: System.get_env("DATABASE_PASSWORD"),
+    database: System.get_env("DATABASE_NAME"),
+    socket_options: []
     priv: "priv/repo"
 
   # The secret key base is used to sign/encrypt cookies and other secrets.
