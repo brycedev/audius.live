@@ -17,7 +17,7 @@ defmodule AudiusLive.Snek do
       [:code.priv_dir(:audius_live), "python"]
       |> Path.join()
 
-    with {:ok, pid} <- :python.start([{:python_path, to_charlist(path)}, {:python, 'python3'}]) do
+    with {:ok, pid} <- :python.start([{:python_path, to_charlist(path)}, {:python, 'python'}]) do
       {:ok, pid}
     end
   end

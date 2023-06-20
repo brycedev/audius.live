@@ -21,7 +21,7 @@ ARG RUNNER_IMAGE="debian:${DEBIAN_VERSION}"
 FROM ${BUILDER_IMAGE} as builder
 
 # install build dependencies
-RUN apt-get update -y && apt-get install -y build-essential git nodejs npm software-properties-common python3 python3-pip \
+RUN apt-get update -y && apt-get install -y build-essential git nodejs npm software-properties-common \
   && apt-get clean && rm -f /var/lib/apt/lists/*_*
 
 # prepare build dir
@@ -52,7 +52,6 @@ COPY lib lib
 COPY assets assets
 
 RUN cd assets && npm install
-RUN cd priv/python && pip install -r requirements.txt
 
 # compile assets
 RUN mix assets.deploy
@@ -70,7 +69,7 @@ RUN mix release
 # the compiled release and other runtime necessities
 FROM ${RUNNER_IMAGE}
 
-RUN apt-get update -y && apt-get install -y libstdc++6 openssl libncurses5 locales \
+RUN apt-get update -y && apt-get install -y libstdc++6 openssl libncurses5 locales python3 python3-pip \
   && apt-get clean && rm -f /var/lib/apt/lists/*_*
 
 # Set the locale
@@ -81,6 +80,9 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
 WORKDIR "/app"
+
+RUN cd priv/python && pip install -r requirements.txt
+
 RUN chown nobody /app
 
 # set runner ENV
