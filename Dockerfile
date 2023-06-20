@@ -52,6 +52,7 @@ COPY lib lib
 COPY assets assets
 
 RUN cd assets && npm install
+RUN cd priv/python && pip install -r requirements.txt
 
 # compile assets
 RUN mix assets.deploy
