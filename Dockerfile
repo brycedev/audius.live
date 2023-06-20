@@ -88,11 +88,11 @@ ENV MIX_ENV="prod"
 
 # Only copy the final release from the build stage
 COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/audius_live ./
-COPY --from=builder --chown=nobody:root /app/priv/python ./
+COPY --from=builder --chown=nobody:root /app/priv/python/requirements.txt ./
 
 RUN ls -la /app
 
-# RUN cd priv/python && python -m pip install -r requirements.txt
+RUN python -m pip install -r requirements.txt
 
 USER nobody
 
