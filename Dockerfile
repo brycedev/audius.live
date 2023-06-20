@@ -21,10 +21,7 @@ ARG RUNNER_IMAGE="debian:${DEBIAN_VERSION}"
 FROM ${BUILDER_IMAGE} as builder
 
 # install build dependencies
-RUN apt-get update -y && apt-get install -y build-essential git nodejs npm software-properties-common \
-  && apt-get clean && rm -f /var/lib/apt/lists/*_*
-
-RUN add-apt-repository ppa:deadsnakes/ppa && apt-get update -y && apt-get install -y python3.9 \
+RUN apt-get update -y && apt-get install -y build-essential git nodejs npm software-properties-common python3 \
   && apt-get clean && rm -f /var/lib/apt/lists/*_*
 
 # prepare build dir
