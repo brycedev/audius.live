@@ -79,7 +79,7 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-WORKDIR "/app"
+WORKDIR /app
 
 RUN chown nobody /app
 
@@ -90,7 +90,9 @@ ENV MIX_ENV="prod"
 COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/audius_live ./
 COPY --from=builder --chown=nobody:root /app/priv/python ./
 
-RUN cd priv/python && python -m pip install -r requirements.txt
+RUN ls -la /app
+
+# RUN cd priv/python && python -m pip install -r requirements.txt
 
 USER nobody
 
