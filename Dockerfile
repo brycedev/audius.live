@@ -65,8 +65,6 @@ COPY config/runtime.exs config/
 COPY rel rel
 RUN mix release
 
-COPY priv/python _build/${MIX_ENV}/rel/audius_live
-
 # start a new build stage so that the final image will only contain
 # the compiled release and other runtime necessities
 FROM ${RUNNER_IMAGE}
@@ -90,8 +88,9 @@ ENV MIX_ENV="prod"
 
 # Only copy the final release from the build stage
 COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/audius_live ./
+COPY --from=builder --chown=nobody:root /app/priv/python ./
 
-RUN cd /app/priv/python && python -m pip install -r requirements.txt
+RUN cd priv/python && python -m pip install -r requirements.txt
 
 USER nobody
 
