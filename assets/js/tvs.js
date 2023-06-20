@@ -5,6 +5,8 @@ function generateVideoMesh(tvScreen) {
   let video = document.createElement("video");
 
   video.src = "https://cdn.dexterslab.sh/audiuslive/assets/bumpers/og.mp4";
+  video.muted = true;
+  video.autoplay = true;
   video.crossOrigin = "anonymous";
   video.loop = true;
   video.load();
