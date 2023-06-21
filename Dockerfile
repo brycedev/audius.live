@@ -21,7 +21,7 @@ ARG RUNNER_IMAGE="debian:${DEBIAN_VERSION}"
 FROM ${BUILDER_IMAGE} as builder
 
 # install build dependencies
-RUN apt-get update -y && apt-get install -y build-essential git nodejs npm software-properties-common \
+RUN apt-get update -y && apt-get install -y build-essential git nodejs npm software-properties-common wget curl \
   && apt-get clean && rm -f /var/lib/apt/lists/*_*
 
 # prepare build dir
@@ -64,7 +64,7 @@ COPY config/runtime.exs config/
 
 COPY rel rel
 
-RUN git clone https://github.com/aubio/aubio.git && mv aubio priv && cd priv/aubio && make
+RUN git clone https://github.com/aubio/aubio.git priv/aubio cd priv/aubio && make
 
 RUN mix release
 
