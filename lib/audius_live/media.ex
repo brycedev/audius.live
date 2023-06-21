@@ -1,4 +1,7 @@
 defmodule AudiusLive.Media do
+  @moduledoc """
+  This module is responsible for handling video and audio related tasks.
+  """
   alias AudiusLive.Track
   alias Phoenix.PubSub
   import Ecto.Query
@@ -30,16 +33,38 @@ defmodule AudiusLive.Media do
     IO.puts("Detecting beats...")
 
     track_path = Path.absname("priv/static/tracks/#{track_id}/audio.mp3")
+    json_path = Path.absname("priv/static/tracks/#{track_id}/beats.json")
 
-    detection_result = AudiusLive.Snek.detect_beats(track_path)
-    beat_times = Jason.decode!(elem(detection_result, 1))
-    File.write!("priv/static/tracks/#{track_id}/beats.json", Jason.encode!(beat_times))
+    aubio_call = System.cmd("./aubioonset", [
+      "--input",
+      track_path, 
+      "--onset-threshold",
+      "0.1"
+      ], cd: Path.absname("priv/aubio/build/examples"))
+
+    get_beats = elem(aubio_call, 0) |> String.split("\n")
+
+    onset_times = Enum.take(get_beats, Enum.count(get_beats) - 1)
+      |> Enum.map(&String.to_float/1)
+
+    onset_time_deltas = onset_times
+      |> Enum.with_index
+      |> Enum.map(fn({x, i}) ->
+          if i == 0 do
+            x
+          else
+            x - Enum.at(onset_times, i - 1)
+          end
+        end)
+
+    onset_time_deltas_to_frames = Enum.map(onset_time_deltas, fn(x) -> x * 24 end)
+
+    File.write!("priv/static/tracks/#{track_id}/beats.json", Jason.encode!(onset_time_deltas_to_frames))
   end
 
   def generate_video(track_id) do
     IO.puts("Generating video...")
 
-    _track_path = Path.absname("priv/static/tracks/#{track_id}")
     json_file = File.read!("priv/static/gifs.json")
     available_gifs = Jason.decode!(json_file)["urls"]
 
