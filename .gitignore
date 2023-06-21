@@ -46,3 +46,4 @@ assets/vendor
 priv/python/gifs/
 *.DS_Store
 .env
+fetch_gifs.py
