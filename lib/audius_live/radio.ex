@@ -33,7 +33,7 @@ defmodule AudiusLive.Radio do
   end
 
   @impl true
-  def handle_call({:start, length}, _from, {_status, time, duration}) do
+  def handle_call({:start, length}, _from, {_status, time, _duration}) do
     Process.send_after(self(), :tick, 1000)
     {:reply, :running, {:running, time, length}}
   end

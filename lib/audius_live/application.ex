@@ -14,8 +14,7 @@ defmodule AudiusLive.Application do
       {Finch, name: AudiusLive.Finch},
       AudiusLiveWeb.Endpoint,
       AudiusLive.Scheduler,
-      {AudiusLive.Radio, name: AudiusLive.Radio},
-      :poolboy.child_spec(:worker, python_poolboy_config())
+      {AudiusLive.Radio, name: AudiusLive.Radio}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
@@ -30,14 +29,5 @@ defmodule AudiusLive.Application do
   def config_change(changed, _new, removed) do
     AudiusLiveWeb.Endpoint.config_change(changed, removed)
     :ok
-  end
-
-  defp python_poolboy_config do
-    [
-      {:name, {:local, :python_worker}},
-      {:worker_module, AudiusLive.Snek},
-      {:size, 3},
-      {:max_overflow, 4}
-    ]
   end
 end
