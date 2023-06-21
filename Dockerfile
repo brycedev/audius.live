@@ -63,6 +63,9 @@ RUN mix compile
 COPY config/runtime.exs config/
 
 COPY rel rel
+
+RUN git clone https://github.com/aubio/aubio.git && mv aubio priv && cd priv/aubio && make
+
 RUN mix release
 
 # start a new build stage so that the final image will only contain
