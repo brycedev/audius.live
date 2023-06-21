@@ -21,7 +21,7 @@ ARG RUNNER_IMAGE="debian:${DEBIAN_VERSION}"
 FROM ${BUILDER_IMAGE} as builder
 
 # install build dependencies
-RUN apt-get update -y && apt-get install -y build-essential git nodejs npm software-properties-common wget curl python3 python3-pip \
+RUN apt-get update -y && apt-get install -y build-essential git nodejs npm software-properties-common wget curl python3 python3-pip python-is-python3 \
   && apt-get clean && rm -f /var/lib/apt/lists/*_*
 
 # prepare build dir
