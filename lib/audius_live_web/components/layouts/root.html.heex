@@ -15,14 +15,17 @@
     <%= @inner_content %>
     <div id="loader" class="absolute inset-0 bg-black z-50 opacity-100 transition-opacity duration-500 ease-in-out">
       <div class="flex items-center justify-center h-full">
-        <img
-          class="h-64 w-auto"
-          src="https://cdn.dexterslab.sh/audiuslive/assets/images/atv.png"
-          alt="Audius.live"
-        />
+        <div class="flex flex-col items-center">
+          <img
+            class="h-64 w-auto"
+            src="https://cdn.dexterslab.sh/audiuslive/assets/images/atv.png"
+            alt="Audius.live"
+          />
+          <span class="loader mt-12"></span>
+        </div>
       </div>
     </div>
-    <header class="absolute inset-x-0 top-0 z-40">
+    <%!-- <header class="absolute inset-x-0 top-0 z-40">
       <nav class="flex items-center justify-between p-6 lg:px-8">
         <div class="hidden lg:flex lg:gap-x-12">
           <img
@@ -37,6 +40,6 @@
           </a>
         </div>
       </nav>
-    </header>
+    </header> --%>
   </body>
 </html>
