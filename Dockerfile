@@ -64,7 +64,7 @@ COPY config/runtime.exs config/
 
 COPY rel rel
 
-RUN git clone https://github.com/aubio/aubio.git priv/aubio cd priv/aubio && make
+RUN git clone https://github.com/aubio/aubio.git priv/aubio && cd priv/aubio && make
 
 RUN mix release
 
