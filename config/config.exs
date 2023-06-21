@@ -73,8 +73,7 @@ config :audius_live, AudiusLive.Scheduler,
   jobs: [
     {"* * * * *", {AudiusLive.Audius, :discover_next_track, []}},
     {"*/2 * * * *", {AudiusLive.Media, :queue_ready_video, []}},
-    {"*/30 * * * *", {AudiusLive.Snek, :fetch_gifs, []}},
-    {"*/3 * * * *", {AudiusLive.Media, :compose_music_video, []}}
+    # {"*/3 * * * *", {AudiusLive.Media, :compose_music_video, []}}
   ]
 
 # Import environment specific config. This must remain at the bottom

@@ -1,4 +1,7 @@
 defmodule AudiusLive.Audius do
+  @moduledoc """
+  This module is responsible for interfacing with the Audius API.
+  """
   alias AudiusLive.{Repo, Track}
   import Ecto.Query
 
