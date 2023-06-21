@@ -19,9 +19,9 @@ function generateVideoMesh(tvScreen) {
     uniforms: {
       tDiffuse: { value: videoTexture },
       time: { value: 0.0 },
-      distortion: { value: 0.57 },
-      distortion2: { value: 0.57 },
-      speed: { value: 0.1 },
+      distortion: { value: 0.67 },
+      distortion2: { value: 0.67 },
+      speed: { value: 0.12 },
       rollSpeed: { value: 0.0 },
     },
     vertexShader: `
@@ -168,9 +168,6 @@ export async function trinitron() {
   );
 
   const tvScreen = tvScreenData.scene;
-  tvScreen.castShadow = true;
-  tvScreen.receiveShadow = true;
-  tvScreen.transparent = true;
 
   tvScreen.scale.multiplyScalar(41.7 / maxAxis);
   tvScreen.position.copy(tvCenter).multiplyScalar(-1);
@@ -185,9 +182,11 @@ export async function trinitron() {
         thickness: 0.07,
         roughness: 0.07,
         transmission: 1.05,
-        reflectivity: 0.04,
+        reflectivity: 0.09,
         transparent: true,
         opacity: 0.4,
+        receiveShadow: true,
+        castShadow: true,
       });
       child.material.needsUpdate = true;
     }

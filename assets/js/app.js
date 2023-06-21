@@ -221,4 +221,10 @@ function playVideo() {
 (async () => {
   await init();
   setupClock();
+  setTimeout(() => {
+    const loader = document.getElementById("loader");
+    loader.classList.toggle("opacity-0");
+    loader.classList.toggle("opacity-100");
+    loader.classList.toggle("pointer-events-none");
+  }, 1200);
 })();
