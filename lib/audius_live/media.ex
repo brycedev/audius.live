@@ -32,53 +32,83 @@ defmodule AudiusLive.Media do
   def detect_beats(track_id) do
     IO.puts("Detecting beats...")
 
-    track_path = Path.absname("priv/static/tracks/#{track_id}/audio.mp3")
-    json_path = Path.absname("priv/static/tracks/#{track_id}/beats.json")
+    mp3_path = Path.absname("priv/tracks/#{track_id}/audio.mp3")
+    wav_path = Path.absname("priv/tracks/#{track_id}/audio.wav")
+    json_path = Path.absname("priv/tracks/#{track_id}/beats.json") 
 
-    aubio_call = System.cmd("./aubioonset", [
-      "--input",
-      track_path, 
-      "--onset-threshold",
-      "0.1"
-      ], cd: Path.absname("priv/aubio/build/examples"))
+    if !File.exists?(wav_path) do
+      case System.cmd("sh", ["-c", "ffmpeg -i #{mp3_path} #{wav_path}"]) do
+        {_output, 0} ->
+          
+          {:ok, wav_path}
+        
+        {output, _} ->
+          {:error, "Conversion failed: #{output}"}
+      end
+    end
 
-    get_beats = elem(aubio_call, 0) |> String.split("\n")
+    if !File.exists?(json_path) do
+      aubio_call = System.cmd("./aubioonset", [
+        "--input",
+        wav_path, 
+        "--onset-threshold",
+        "1"
+        ], cd: Path.absname("priv/aubio/build/examples"))
+  
+      get_beats = elem(aubio_call, 0) |> String.split("\n")
+  
+      onset_times = Enum.take(get_beats, Enum.count(get_beats) - 1)
+        |> Enum.map(&String.to_float/1)
+  
+      onset_time_deltas = onset_times
+        |> Enum.with_index
+        |> Enum.map(fn({x, i}) ->
+            if i == 0 do
+              x
+            else
+              x - Enum.at(onset_times, i - 1)
+            end
+          end)
+  
+      onset_time_deltas_to_frames = Enum.map(onset_time_deltas, fn(x) -> round(x * 24) end)
+      onset_time_deltas_to_frames = Enum.map(onset_time_deltas_to_frames, fn(x) -> if x == 0 do 1 else x end end)
+  
+      File.write!(json_path, Jason.encode!(onset_time_deltas_to_frames))
 
-    onset_times = Enum.take(get_beats, Enum.count(get_beats) - 1)
-      |> Enum.map(&String.to_float/1)
-
-    onset_time_deltas = onset_times
-      |> Enum.with_index
-      |> Enum.map(fn({x, i}) ->
-          if i == 0 do
-            x
-          else
-            x - Enum.at(onset_times, i - 1)
-          end
-        end)
-
-    onset_time_deltas_to_frames = Enum.map(onset_time_deltas, fn(x) -> x * 24 end)
-
-    File.write!("priv/static/tracks/#{track_id}/beats.json", Jason.encode!(onset_time_deltas_to_frames))
+    end
   end
 
   def generate_video(track_id) do
     IO.puts("Generating video...")
 
-    json_file = File.read!("priv/static/gifs.json")
+    video_path = "priv/videos/#{track_id}"
+    gifs_path = "#{video_path}/threemotion/public/gifs"
+    audio_path = "#{video_path}/threemotion/public/audio.mp3"
+
+    System.cmd("cp", [
+      "-r",
+      "priv/threemotion",
+      video_path
+    ])
+
+    System.cmd("rm", [
+      "-rf",
+      "#{gifs_path}/*}"
+    ])
+
+    System.cmd("rm", [
+      audio_path
+    ])
+
+    json_file = File.read!("priv/gifs.json")
     available_gifs = Jason.decode!(json_file)["urls"]
-
     gifs = Enum.take_random(available_gifs, 32)
-
-    download_path = Path.absname("priv/static/videos/#{track_id}/gifs")
-    File.mkdir_p!(download_path)
 
     # download gifs
     gifs
     |> Enum.with_index()
     |> Enum.each(fn {gif, i} ->
-      gif_path = Path.absname("priv/static/videos/#{track_id}/gifs/#{i}.mp4")
-
+      gif_path = Path.absname("#{gifs_path}/#{i}.mp4")
       if !File.exists?(gif_path) do
         System.cmd("curl", [
           gif,
@@ -89,33 +119,13 @@ defmodule AudiusLive.Media do
     end)
 
     System.cmd("cp", [
-      "-r",
-      "priv/threemotion",
-      "priv/static/videos/#{track_id}"
-    ])
-
-    System.cmd("rm", [
-      "-rf",
-      "priv/static/videos/#{track_id}/threemotion/public/gifs"
-    ])
-
-    System.cmd("mv", [
-      "priv/static/videos/#{track_id}/gifs",
-      "priv/static/videos/#{track_id}/threemotion/public/gifs"
-    ])
-
-    System.cmd("rm", [
-      "priv/static/videos/#{track_id}/threemotion/public/audio.mp3"
+      "priv/tracks/#{track_id}/audio.mp3",
+      audio_path
     ])
 
     System.cmd("cp", [
-      "priv/static/tracks/#{track_id}/audio.mp3",
-      "priv/static/videos/#{track_id}/threemotion/public/audio.mp3"
-    ])
-
-    System.cmd("cp", [
-      "priv/static/tracks/#{track_id}/beats.json",
-      "priv/static/videos/#{track_id}/threemotion/public/beats.json"
+      "priv/tracks/#{track_id}/beats.json",
+      "#{video_path}/threemotion/public/beats.json"
     ])
 
     System.cmd(
@@ -124,7 +134,7 @@ defmodule AudiusLive.Media do
         "run",
         "go"
       ],
-      cd: "#{Path.absname("priv/static/videos/#{track_id}/threemotion")}"
+      cd: "#{video_path}/threemotion"
     )
   end
 
@@ -137,30 +147,37 @@ defmodule AudiusLive.Media do
       )
 
     if track = AudiusLive.Repo.one(query) do
+      video_path = "priv/videos/#{track.audius_id}"
+      File.mkdir_p!(Path.absname(video_path))
       detect_beats(track.audius_id)
       generate_video(track.audius_id)
-      if File.exists?("priv/static/videos/#{track.audius_id}/musicvideo.mp4") do
+      if File.exists?("#{video_path}/musicvideo.mp4") do
+        # TODO: compress video 
+        
+
         upload_video_to_r2(track.audius_id)
         changeset = Track.changeset(track, %{has_music_video: true})
 
         AudiusLive.Repo.update!(changeset)
+
+        System.cmd("rm", [
+          "-rf",
+          "priv/tracks/#{track.audius_id}"
+        ])
+
+        System.cmd("rm", [
+          "-rf",
+          "priv/videos/#{track.audius_id}"
+        ])
       end
 
-      System.cmd("rm", [
-        "-rf",
-        "priv/static/videos/#{track.audius_id}"
-      ])
-
-      System.cmd("rm", [
-        "-rf",
-        "priv/static/tracks/#{track.audius_id}"
-      ])
+      
       
     end
   end
 
   def upload_video_to_r2(track_id) do
-    video_path = Path.absname("priv/static/videos/#{track_id}/musicvideo.mp4")
+    video_path = Path.absname("priv/videos/#{track_id}/musicvideo.mp4")
 
     ExAws.S3.put_object(
       "dexterslab",

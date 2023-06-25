@@ -20,9 +20,6 @@ config :audius_live, AudiusLiveWeb.Endpoint,
   secret_key_base: "mg0MdEj7snS9OOQc9W1nXeplIwVwBjad0GzwnDklXk5BwDLSSgNxMOPiUoCVeioJ",
   server: false
 
-# In test we don't send emails.
-config :audius_live, AudiusLive.Mailer, adapter: Swoosh.Adapters.Test
-
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
 

@@ -88,7 +88,7 @@ defmodule AudiusLive.Audius do
         stream_url,
         track_id,
         track["duration"],
-        "priv/static/tracks/#{track_id}/audio.mp3"
+        "priv/tracks/#{track_id}/audio.mp3"
       )
       
     else
