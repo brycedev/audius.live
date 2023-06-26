@@ -30,4 +30,10 @@ defmodule AudiusLive.Track do
     |> unique_constraint(:audius_id)
   end
 
+  @doc false
+  def changeset_update(track, attrs) do
+    track
+    |> cast(attrs, [:has_music_video, :status])
+  end
+
 end

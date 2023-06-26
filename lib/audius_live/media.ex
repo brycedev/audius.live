@@ -175,7 +175,7 @@ defmodule AudiusLive.Media do
         ])
 
         upload_video_to_r2(track.audius_id)
-        changeset = Track.changeset(track, %{has_music_video: true})
+        changeset = Track.changeset_update(track, %{has_music_video: true})
 
         AudiusLive.Repo.update!(changeset)
 
@@ -219,7 +219,7 @@ defmodule AudiusLive.Media do
         limit: 1
       )
       next_track = AudiusLive.Repo.one(next_music_video)
-      AudiusLive.Repo.update!(Track.changeset(next_track, %{status: :next}))
+      AudiusLive.Repo.update!(Track.changeset_update(next_track, %{status: :next}))
 
       ready_music_video =
           from(t in Track,
@@ -229,7 +229,7 @@ defmodule AudiusLive.Media do
           )
 
       ready_track = AudiusLive.Repo.one(ready_music_video)
-      AudiusLive.Repo.update!(Track.changeset(ready_track, %{status: :ready}))
+      AudiusLive.Repo.update!(Track.changeset_update(ready_track, %{status: :ready}))
 
       if !AudiusLive.Radio.running?() do
         play_next_video()

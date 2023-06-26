@@ -22,23 +22,12 @@ defmodule AudiusLive.Audius do
         limit: 1
       )
 
-    is_valid = true
-
-    if AudiusLive.Repo.one(query) do
-      is_valid = false
+    cond do 
+      track["is_streamable"] == false -> false
+      duration > 150 -> false
+      AudiusLive.Repo.one(query) -> false
+      true -> true
     end
-
-    if duration > 150 do
-      IO.puts("Track duration is too long: #{duration}")
-      is_valid = false
-    end
-
-    if track["is_streamable"] == false do
-      is_valid = false
-    end
-
-    is_valid
-
   end
 
   def get_random_track() do
