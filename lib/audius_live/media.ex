@@ -152,8 +152,27 @@ defmodule AudiusLive.Media do
       detect_beats(track.audius_id)
       generate_video(track.audius_id)
       if File.exists?("#{video_path}/musicvideo.mp4") do
-        # TODO: compress video 
-        
+
+        System.cmd("ffmpeg", [
+          "-i",
+          "#{video_path}/musicvideo.mp4",
+          "-c:v",
+          "libx264",
+          "-crf",
+          "23",
+          "-preset",
+          "veryfast",
+          "#{video_path}/musicvideo_compressed.mp4"
+        ])
+
+        System.cmd("rm", [
+          "#{video_path}/musicvideo.mp4"
+        ])
+
+        System.cmd("mv", [
+          "#{video_path}/musicvideo_compressed.mp4",
+          "#{video_path}/musicvideo.mp4"
+        ])
 
         upload_video_to_r2(track.audius_id)
         changeset = Track.changeset(track, %{has_music_video: true})
@@ -164,15 +183,12 @@ defmodule AudiusLive.Media do
           "-rf",
           "priv/tracks/#{track.audius_id}"
         ])
-
-        System.cmd("rm", [
-          "-rf",
-          "priv/videos/#{track.audius_id}"
-        ])
       end
 
-      
-      
+      System.cmd("rm", [
+        "-rf",
+        "priv/videos/#{track.audius_id}"
+      ])
     end
   end
 
