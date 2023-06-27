@@ -48,12 +48,13 @@ defmodule AudiusLive.Media do
     end
 
     if !File.exists?(json_path) do
-      aubio_call = System.cmd(Path.absname("priv/aubio/build/examples/aubioonset"), [
-        "--input",
-        wav_path, 
-        "--onset-threshold",
-        "1"
-        ])
+      aubio_path = Path.absname("priv/aubio/build/examples/aubioonset")
+      aubio_call = System.cmd("sh", 
+        [
+          "-c", 
+          "#{aubio_path} --input #{wav_path} --onset-threshold 1"
+        ]
+      )
   
       get_beats = elem(aubio_call, 0) |> String.split("\n")
   
