@@ -7,7 +7,7 @@ defmodule AudiusLive.Media do
   import Ecto.Query
 
   def record_audio_stream(url, track_id, duration, output_file_path) do
-    File.mkdir_p!(Path.dirname(output_file_path))
+    File.mkdir_p!(:code.priv_dir(:audius_live) |> Path.join("/tracks/#{track_id}"))
 
     {_output, status} =
       System.cmd("ffmpeg", [
