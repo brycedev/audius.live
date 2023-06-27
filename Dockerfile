@@ -73,7 +73,7 @@ RUN mix release
 # the compiled release and other runtime necessities
 FROM ${RUNNER_IMAGE}
 
-RUN apt-get update -y && apt-get install -y build-essential software-properties-common wegt curl libstdc++6 openssl libncurses5 locales ffmpeg \
+RUN apt-get update -y && apt-get install -y build-essential software-properties-common wget curl libstdc++6 openssl libncurses5 locales ffmpeg \
   libavcodec-dev libavutil-dev libavformat-dev \
   libswresample-dev libavresample-dev \
   libsamplerate-dev libsndfile-dev \
