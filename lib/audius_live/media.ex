@@ -32,9 +32,9 @@ defmodule AudiusLive.Media do
   def detect_beats(track_id) do
     IO.puts("Detecting beats...")
 
-    mp3_path = Path.absname("priv/tracks/#{track_id}/audio.mp3")
-    wav_path = Path.absname("priv/tracks/#{track_id}/audio.wav")
-    json_path = Path.absname("priv/tracks/#{track_id}/beats.json") 
+    mp3_path = :code.priv_dir(:audius_live) |> Path.join("/tracks/#{track_id}/audio.mp3")
+    wav_path = :code.priv_dir(:audius_live) |> Path.join("/tracks/#{track_id}/audio.wav")
+    json_path = :code.priv_dir(:audius_live) |> Path.join("/tracks/#{track_id}/beats.json")
 
     if !File.exists?(wav_path) do
       case System.cmd("sh", ["-c", "ffmpeg -i #{mp3_path} #{wav_path}"]) do
@@ -48,7 +48,9 @@ defmodule AudiusLive.Media do
     end
 
     if !File.exists?(json_path) do
-      aubio_path = Path.absname("priv/aubio/build/examples/aubioonset")
+      
+      aubio_path = :code.priv_dir(:audius_live) |> Path.join("/aubio/build/examples/aubioonset")
+
       aubio_call = System.cmd("sh", 
         [
           "-c", 
@@ -82,7 +84,7 @@ defmodule AudiusLive.Media do
   def generate_video(track_id) do
     IO.puts("Generating video...")
 
-    video_path = "priv/videos/#{track_id}"
+    video_path = :code.priv_dir(:audius_live) |> Path.join("/videos/#{track_id}")
     gifs_path = "#{video_path}/threemotion/public/gifs"
     audio_path = "#{video_path}/threemotion/public/audio.mp3"
 
@@ -101,7 +103,7 @@ defmodule AudiusLive.Media do
       audio_path
     ])
 
-    json_file = File.read!("priv/gifs.json")
+    json_file = File.read!(:code.priv_dir(:audius_live) |> Path.join("/gifs.json"))
     available_gifs = Jason.decode!(json_file)["urls"]
     gifs = Enum.take_random(available_gifs, 32)
 
@@ -120,12 +122,12 @@ defmodule AudiusLive.Media do
     end)
 
     System.cmd("cp", [
-      "priv/tracks/#{track_id}/audio.mp3",
+      :code.priv_dir(:audius_live) |> Path.join("/tracks/#{track_id}/audio.mp3"),
       audio_path
     ])
 
     System.cmd("cp", [
-      "priv/tracks/#{track_id}/beats.json",
+      :code.priv_dir(:audius_live) |> Path.join("/tracks/#{track_id}/beats.json"),
       "#{video_path}/threemotion/public/beats.json"
     ])
 
@@ -148,7 +150,8 @@ defmodule AudiusLive.Media do
       )
 
     if track = AudiusLive.Repo.one(query) do
-      video_path = "priv/videos/#{track.audius_id}"
+      video_path = :code.priv_dir(:audius_live) |> Path.join("/videos/#{track.audius_id}")
+      track_path = :code.priv_dir(:audius_live) |> Path.join("/tracks/#{track.audius_id}")
       File.mkdir_p!(Path.absname(video_path))
       detect_beats(track.audius_id)
       generate_video(track.audius_id)
@@ -174,19 +177,19 @@ defmodule AudiusLive.Media do
 
         System.cmd("rm", [
           "-rf",
-          "priv/tracks/#{track.audius_id}"
+          track_path
         ])
       end
 
       System.cmd("rm", [
         "-rf",
-        "priv/videos/#{track.audius_id}"
+        video_path
       ])
     end
   end
 
   def upload_video_to_r2(track_id) do
-    video_path = Path.absname("priv/videos/#{track_id}/musicvideo_compressed.mp4")
+    video_path = :code.priv_dir("/videos/#{track_id}/musicvideo_compressed.mp4")
 
     ExAws.S3.put_object(
       "dexterslab",
