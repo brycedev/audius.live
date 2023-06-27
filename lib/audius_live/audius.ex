@@ -77,7 +77,7 @@ defmodule AudiusLive.Audius do
         stream_url,
         track_id,
         track["duration"],
-        "priv/tracks/#{track_id}/audio.mp3"
+        :code.priv_dir(:audius_live) |> Path.join("/tracks/#{track_id}/audio.mp3")
       )
       
     else

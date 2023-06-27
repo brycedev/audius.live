@@ -65,7 +65,7 @@ COPY config/runtime.exs config/
 
 COPY rel rel
 
-RUN git clone https://github.com/aubio/aubio.git priv/aubio && cd priv/aubio && make
+RUN git clone https://github.com/aubio/aubio.git priv/aubio
 
 RUN mix release
 
@@ -73,8 +73,11 @@ RUN mix release
 # the compiled release and other runtime necessities
 FROM ${RUNNER_IMAGE}
 
-RUN apt-get update -y && apt-get install -y libstdc++6 openssl libncurses5 locales ffmpeg\
-  && apt-get clean && rm -f /var/lib/apt/lists/*_*
+RUN apt-get update -y && apt-get install -y libstdc++6 openssl libncurses5 locales ffmpeg \
+  libavcodec-dev libavutil-dev libavformat-dev \
+  libswresample-dev libavresample-dev \
+  libsamplerate-dev libsndfile-dev \
+  txt2man doxygen && apt-get clean && rm -f /var/lib/apt/lists/*_*
 
 # Set the locale
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
@@ -92,6 +95,8 @@ ENV MIX_ENV="prod"
 
 # Only copy the final release from the build stage
 COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/audius_live ./
+
+RUN cd /app/lib/audius_live-0.1.0/priv/aubio && make
 
 USER nobody
 
