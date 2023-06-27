@@ -189,7 +189,8 @@ defmodule AudiusLive.Media do
   end
 
   def upload_video_to_r2(track_id) do
-    video_path = :code.priv_dir("/videos/#{track_id}/musicvideo_compressed.mp4")
+    video_path = :code.priv_dir(:audius_live) 
+      |> Path.join("/videos/#{track_id}/musicvideo_compressed.mp4")
 
     ExAws.S3.put_object(
       "dexterslab",
