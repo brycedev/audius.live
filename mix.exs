@@ -53,8 +53,6 @@ defmodule AudiusLive.MixProject do
       {:quantum, "~> 3.5"},
       {:httpoison, "~> 2.1"},
       {:jason, "~> 1.4"},
-      {:erlport, "~> 0.10.1"},
-      {:poolboy, "~> 1.5"},
       {:ex_aws, "~> 2.4.2"},
       {:ex_aws_s3, "~> 2.4.0"},
       {:hackney, "~> 1.18"},
