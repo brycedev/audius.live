@@ -74,7 +74,7 @@ RUN mix release
 FROM ${RUNNER_IMAGE}
 
 RUN apt-get update -y && apt-get install -y build-essential software-properties-common wget curl libstdc++6 openssl libncurses5 locales ffmpeg \
-  libavcodec-dev libavutil-dev libavformat-dev \
+  libavcodec-dev libavutil-dev libavformat-dev python3 python3-pip python-is-python3 \
   libswresample-dev libavresample-dev \
   libsamplerate-dev libsndfile-dev \
   txt2man doxygen && apt-get clean && rm -f /var/lib/apt/lists/*_*
