@@ -168,6 +168,8 @@ export async function trinitron() {
   );
 
   const tvScreen = tvScreenData.scene;
+  tvScreen.castShadow = true;
+  tvScreen.receiveShadow = true;
 
   tvScreen.scale.multiplyScalar(41.7 / maxAxis);
   tvScreen.position.copy(tvCenter).multiplyScalar(-1);
@@ -185,8 +187,6 @@ export async function trinitron() {
         reflectivity: 0.09,
         transparent: true,
         opacity: 0.4,
-        receiveShadow: true,
-        castShadow: true,
       });
       child.material.needsUpdate = true;
     }

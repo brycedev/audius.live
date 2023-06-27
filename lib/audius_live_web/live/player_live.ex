@@ -20,41 +20,30 @@ defmodule AudiusLiveWeb.PlayerLive do
     if connected?(socket) do
       Radio.subscribe()
     end
-
-    {status, time, duration} = Radio.get_clock_state(AudiusLive.Radio)
-
-    {:ok, assign(socket, status: status, time: time, duration: duration)}
+    
+    {:ok, socket}
   end
 
   def handle_info(:clock_updated, socket) do
-    {status, time, duration} = Radio.get_clock_state(AudiusLive.Radio)
+    {status, time, duration, url} = Radio.get_state(Radio)
 
-    socket = assign(socket, status: status, time: time, duration: duration)
+    socket = assign(socket, status: status, time: time, duration: duration, url: url)
 
     {:noreply, push_event(socket, "clockUpdated", %{
       status: status,
       time: time,
-      duration: duration
+      duration: duration,
+      url: url
     })}
   end
 
   def handle_info(:track_updated, socket) do 
-    {status, time, duration} = Radio.get_clock_state(AudiusLive.Radio)
+    {status, time, duration, url} = Radio.get_state(Radio)
 
-    socket = assign(socket, status: status, time: time, duration: duration)
-
-    playing_track_query =
-      from(t in Track,
-        where: t.status == :playing,
-        limit: 1
-      )
-
-    
-
-    track = AudiusLive.Repo.one(playing_track_query)
+    socket = assign(socket, status: status, time: time, duration: duration, url: url)
 
     {:noreply, push_event(socket, "trackUpdated", %{
-      url: "https://cdn.dexterslab.sh/dexterslab/audiuslive/videos/#{track.audius_id}.mp4",
+      url: url,
       status: status,
       time: time,
       duration: duration

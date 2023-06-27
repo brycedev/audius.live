@@ -54,6 +54,7 @@ config :phoenix, :json_library, Jason
 config :ex_aws,
   access_key_id: System.get_env("R2_ACCESS_KEY_ID"),
   region: "auto",
+  max_attempts: 3,
   secret_access_key: System.get_env("R2_SECRET_ACCESS_KEY"),
   s3: [
     scheme: "https://",
@@ -64,8 +65,8 @@ config :ex_aws,
 config :audius_live, AudiusLive.Scheduler,
   jobs: [
     {"* * * * *", {AudiusLive.Audius, :discover_next_track, []}},
-    {"* * * * *", {AudiusLive.Media, :queue_ready_video, []}},
-    {"*/7 * * * *", {AudiusLive.Media, :compose_music_video, []}}
+    {"* * * * *", {AudiusLive.Media, :start_station, []}},
+    {"*/9 * * * *", {AudiusLive.Media, :compose_music_video, []}}
   ]
 
 # Import environment specific config. This must remain at the bottom

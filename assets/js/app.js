@@ -10,8 +10,6 @@ import { trinitron } from "./tvs";
 let camera, composer, renderer, scene;
 // video
 let video, videoMaterial, videoTexture;
-// state
-let videoIsPlaying = false;
 // models
 let marbleColumn, tvModel, tvScreenModel;
 // controls
@@ -158,7 +156,7 @@ function setupPostprocessing() {
 }
 
 function setupEventListeners() {
-  window.addEventListener("click", playVideo, false);
+  // window.addEventListener("click", playVideo, false);
   window.addEventListener(
     "resize",
     function () {
@@ -179,43 +177,58 @@ function setupClock() {
     params: { _csrf_token: csrfToken },
   });
 
-  const stop = (interval) => {
-    clearInterval(interval);
+  const stop = () => {
     T.ticking = false;
-    video.pause();
+    video.loop = true;
+    if (!video.paused) video.pause();
+    setBumper();
+  };
+
+  const play = () => {
+    T.ticking = true;
+    video.muted = false;
+    video.loop = false;
+    if (video.paused) video.play();
+  };
+
+  const setBumper = () => {
+    const bumperUrl =
+      "https://cdn.dexterslab.sh/audiuslive/assets/bumpers/og.mp4";
+    video.src = bumperUrl;
+    video.load();
+    video.play();
   };
 
   T = { ticking: false };
+
   window.addEventListener("phx:clockUpdated", (e) => {
     T.currentTime = e.detail.time;
     T.status = e.detail.status;
-    if (!videoIsPlaying) video.currentTime = T.currentTime;
+    T.url = e.detail.url;
 
-    if (T.status == "running" && !T.ticking) {
-      T.ticking = true;
-      T.interval = setInterval(function () {}, 1000);
+    if (T.status == "running") {
+      if (!T.ticking) {
+        video.src = T.url;
+        video.load();
+        video.currentTime = T.currentTime;
+        play();
+      }
     }
 
     if (T.status == "stopped") {
-      stop(T.interval);
+      if (T.ticking) stop(T.interval);
     }
   });
 
-  window.addEventListener("phx:videoUpdated", (e) => {
-    const videoUrl = e.detail.video_url;
-    video.src = videoUrl;
+  window.addEventListener("phx:trackUpdated", (e) => {
+    video.src = e.detail.url;
     video.load();
+    play();
   });
 
   liveSocket.connect();
-  liveSocket.enableDebug();
+  liveSocket.disableDebug();
   window.liveSocket = liveSocket;
-}
-
-function playVideo() {
-  if (videoIsPlaying) return;
-  if (T.status == "running") video.play();
-  videoIsPlaying = true;
 }
 
 (async () => {

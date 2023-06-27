@@ -2,8 +2,8 @@ defmodule AudiusLive.Media do
   @moduledoc """
   This module is responsible for handling video and audio related tasks.
   """
-  alias AudiusLive.Track
   alias Phoenix.PubSub
+  alias AudiusLive.{Track, Repo}
   import Ecto.Query
 
   def record_audio_stream(url, track_id, duration, output_file_path) do
@@ -157,11 +157,9 @@ defmodule AudiusLive.Media do
           "-i",
           "#{video_path}/musicvideo.mp4",
           "-c:v",
-          "libx264",
+          "libx265",
           "-crf",
-          "23",
-          "-preset",
-          "veryfast",
+          "28",
           "#{video_path}/musicvideo_compressed.mp4"
         ])
 
@@ -169,15 +167,9 @@ defmodule AudiusLive.Media do
           "#{video_path}/musicvideo.mp4"
         ])
 
-        System.cmd("mv", [
-          "#{video_path}/musicvideo_compressed.mp4",
-          "#{video_path}/musicvideo.mp4"
-        ])
-
         upload_video_to_r2(track.audius_id)
-        changeset = Track.changeset_update(track, %{has_music_video: true})
 
-        AudiusLive.Repo.update!(changeset)
+        Track |> where(id: ^track.id) |> Repo.update_all(set: [has_music_video: :true])
 
         System.cmd("rm", [
           "-rf",
@@ -193,49 +185,48 @@ defmodule AudiusLive.Media do
   end
 
   def upload_video_to_r2(track_id) do
-    video_path = Path.absname("priv/videos/#{track_id}/musicvideo.mp4")
+    video_path = Path.absname("priv/videos/#{track_id}/musicvideo_compressed.mp4")
 
     ExAws.S3.put_object(
       "dexterslab",
       "audiuslive/videos/#{track_id}.mp4",
       File.read!(video_path)
-    )
-    |> ExAws.request!()
+    ) |> ExAws.request()
+
+    case HTTPoison.get("https://cdn.dexterslab.sh/audiuslive/videos/#{track_id}.mp4") do
+      {:ok, %{status_code: 200}} ->
+        IO.puts("Video upload successful")
+      _ ->
+        IO.puts("Video upload failed")
+        upload_video_to_r2(track_id)
+    end
   end
 
-  def queue_ready_video() do
-    music_video_query =
+  def start_station() do
+    playing_track_query = 
       from(t in Track,
-        where: t.has_music_video == true and t.status == :stopped
+        where: t.status == :playing
       )
+    
+    if !AudiusLive.Repo.one(playing_track_query) do
+      music_video_query =
+        from(t in Track,
+          where: t.has_music_video == true and t.status != :playing
+        )
 
-    music_videos = AudiusLive.Repo.all(music_video_query)
-    music_video_count = music_videos |> Enum.count()
+      music_videos = AudiusLive.Repo.all(music_video_query)
+      music_video_count = music_videos |> Enum.count()
 
-    if music_video_count >= 2 do
-      next_music_video = from(t in Track,
-        where: t.status == :ready,
-        order_by: fragment("RANDOM()"),
-        limit: 1
-      )
-      next_track = AudiusLive.Repo.one(next_music_video)
-      AudiusLive.Repo.update!(Track.changeset_update(next_track, %{status: :next}))
-
-      ready_music_video =
-          from(t in Track,
-            where: t.has_music_video == true and t.status == :stopped,
-            order_by: fragment("RANDOM()"),
-            limit: 1
-          )
-
-      ready_track = AudiusLive.Repo.one(ready_music_video)
-      AudiusLive.Repo.update!(Track.changeset_update(ready_track, %{status: :ready}))
-
-      if !AudiusLive.Radio.running?() do
-        play_next_video()
+      if music_video_count >= 2 do
+        queue_next_video()
       end
 
+      play_next_video()
     end
+  end
+
+  def prepare_next_video() do 
+    Track |> where(status: :playing) |> Repo.update_all(set: [status: :stopped])
   end
 
   def play_next_video() do
@@ -245,10 +236,32 @@ defmodule AudiusLive.Media do
         limit: 1
       )
 
-    now_playing_track = AudiusLive.Repo.one(music_video_query)
-    AudiusLive.Repo.update!(Track.changeset(now_playing_track, %{status: :playing, played_at: DateTime.utc_now()}))
+    if now_playing_track = AudiusLive.Repo.one(music_video_query) do
+      Track 
+        |> where(id: ^now_playing_track.id) 
+        |> Repo.update_all(set: [status: :playing, played_at:  DateTime.utc_now()])
 
-    AudiusLive.Radio.start_clock(AudiusLive.Radio, now_playing_track.duration)
-    PubSub.broadcast(AudiusLive.PubSub, "audius_live:track", :track_updated)
+        AudiusLive.Radio.play_song(
+          AudiusLive.Radio, 
+          now_playing_track.duration,
+          "https://cdn.dexterslab.sh/audiuslive/videos/#{now_playing_track.audius_id}.mp4"
+        )
+      PubSub.broadcast(AudiusLive.PubSub, "audius_live:track", :track_updated)
+    end
+  end
+
+  def queue_next_video() do 
+    if !AudiusLive.Repo.one(from(t in Track, where: t.status == :next)) do
+      ready_track_query = from(t in Track,
+        where: t.status == :stopped and t.has_music_video == true,
+        order_by: fragment("RANDOM()"),
+        limit: 1
+      )
+
+      if ready_track = AudiusLive.Repo.one(ready_track_query) do
+        Track |> where(id: ^ready_track.id) |> Repo.update_all(set: [status: :next])
+        play_next_video()
+      end
+    end
   end
 end

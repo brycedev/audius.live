@@ -13,8 +13,8 @@ defmodule AudiusLive.Application do
       {Phoenix.PubSub, name: AudiusLive.PubSub},
       {Finch, name: AudiusLive.Finch},
       AudiusLiveWeb.Endpoint,
+      {AudiusLive.Radio, name: AudiusLive.Radio},
       AudiusLive.Scheduler,
-      {AudiusLive.Radio, name: AudiusLive.Radio}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
@@ -31,3 +31,4 @@ defmodule AudiusLive.Application do
     :ok
   end
 end
+
