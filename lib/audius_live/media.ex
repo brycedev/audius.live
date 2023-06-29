@@ -85,11 +85,14 @@ defmodule AudiusLive.Media do
   def generate_video(track_id) do
     IO.puts("Generating video...")
 
+    threemotion_path = :code.priv_dir(:audius_live) |> Path.join("/threemotion")
+
     video_path = :code.priv_dir(:audius_live) |> Path.join("/videos/#{track_id}")
     File.mkdir_p!(video_path)
+
     gifs_path = "#{video_path}/threemotion/public/gifs"
     audio_path = "#{video_path}/threemotion/public/audio.mp3"
-    threemotion_path = :code.priv_dir(:audius_live) |> Path.join("/threemotion")
+    
 
     System.cmd("cp", [
       "-r",
@@ -116,6 +119,7 @@ defmodule AudiusLive.Media do
     |> Enum.each(fn {gif, i} ->
       gif_path = "#{gifs_path}/#{i}.mp4"
       if !File.exists?(gif_path) do
+        IO.puts("Downloading gif #{i} to #{gif_path}...")
         System.cmd("curl", [
           gif,
           "-o",
