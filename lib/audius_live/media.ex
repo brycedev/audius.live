@@ -7,7 +7,8 @@ defmodule AudiusLive.Media do
   import Ecto.Query
 
   def record_audio_stream(url, track_id, duration, output_file_path) do
-    File.mkdir_p!(:code.priv_dir(:audius_live) |> Path.join("/tracks/#{track_id}"))
+    IO.puts("Recording audio stream...")
+    IO.puts(output_file_path)
 
     {_output, status} =
       System.cmd("ffmpeg", [
@@ -85,6 +86,7 @@ defmodule AudiusLive.Media do
     IO.puts("Generating video...")
 
     video_path = :code.priv_dir(:audius_live) |> Path.join("/videos/#{track_id}")
+    File.mkdir_p!(video_path)
     gifs_path = "#{video_path}/threemotion/public/gifs"
     audio_path = "#{video_path}/threemotion/public/audio.mp3"
     threemotion_path = :code.priv_dir(:audius_live) |> Path.join("/threemotion")
