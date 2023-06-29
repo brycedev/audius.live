@@ -73,6 +73,8 @@ defmodule AudiusLive.Audius do
 
       stream_url = AudiusLive.Audius.get_stream_url(track_id)
 
+      File.mkdir_p!(:code.priv_dir(:audius_live) |> Path.join("/tracks/#{track_id}"))
+
       AudiusLive.Media.record_audio_stream(
         stream_url,
         track_id,

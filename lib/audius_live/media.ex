@@ -7,9 +7,6 @@ defmodule AudiusLive.Media do
   import Ecto.Query
 
   def record_audio_stream(url, track_id, duration, output_file_path) do
-    IO.puts("Recording audio stream...")
-    IO.puts(output_file_path)
-
     {output, status} =
       System.cmd("ffmpeg", [
         "-hide_banner",
@@ -27,8 +24,6 @@ defmodule AudiusLive.Media do
         output_file_path
       ])
 
-    IO.puts(status)
-    IO.puts(output)
     if status !== 0 do
       stream_url = AudiusLive.Audius.get_stream_url(track_id)
       record_audio_stream(stream_url, track_id, duration, output_file_path)
@@ -43,7 +38,7 @@ defmodule AudiusLive.Media do
     json_path = :code.priv_dir(:audius_live) |> Path.join("/tracks/#{track_id}/beats.json")
 
     if !File.exists?(wav_path) do
-      case System.cmd("sh", ["-c", "ffmpeg -i #{mp3_path} #{wav_path}"]) do
+      case System.cmd("sh", ["-c", "ffmpeg -hide_banner -logevel error -i #{mp3_path} #{wav_path}"]) do
         {_output, 0} ->
 
           {:ok, wav_path}
@@ -166,6 +161,9 @@ defmodule AudiusLive.Media do
       if File.exists?("#{video_path}/musicvideo.mp4") do
 
         System.cmd("ffmpeg", [
+          "-hide_banner",
+          "-logevel",
+          "error",
           "-i",
           "#{video_path}/musicvideo.mp4",
           "-c:v",
