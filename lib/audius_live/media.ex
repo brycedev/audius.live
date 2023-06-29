@@ -97,7 +97,8 @@ defmodule AudiusLive.Media do
 
     File.rm_rf!(gifs_path)
     File.mkdir_p!(gifs_path)
-    File.rm!(audio_path)
+    
+    if File.exists?(audio_path) do File.rm!(audio_path) end
 
     json_file = File.read!(:code.priv_dir(:audius_live) |> Path.join("/gifs.json"))
     available_gifs = Jason.decode!(json_file)["urls"]
