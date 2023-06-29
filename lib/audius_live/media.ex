@@ -10,8 +10,11 @@ defmodule AudiusLive.Media do
     IO.puts("Recording audio stream...")
     IO.puts(output_file_path)
 
-    {_output, status} =
+    {output, status} =
       System.cmd("ffmpeg", [
+        "-hide_banner",
+        "-loglevel",
+        "error",
         "-i",
         url,
         "-ss",
@@ -24,6 +27,8 @@ defmodule AudiusLive.Media do
         output_file_path
       ])
 
+    IO.puts(status)
+    IO.puts(output)
     if status !== 0 do
       stream_url = AudiusLive.Audius.get_stream_url(track_id)
       record_audio_stream(stream_url, track_id, duration, output_file_path)
