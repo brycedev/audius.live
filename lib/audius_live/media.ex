@@ -126,20 +126,19 @@ defmodule AudiusLive.Media do
     )
 
     System.cmd(
-      "npm",
+      "sh",
       [
-        "install"
-      ],
-      cd: "#{video_path}/threemotion"
+        "-c",
+        "cd #{video_path}/threemotion && npm install"
+      ]
     )
 
     System.cmd(
-      "npm",
+      "sh",
       [
-        "run",
-        "build"
-      ],
-      cd: "#{video_path}/threemotion"
+        "-c",
+        "cd #{video_path}/threemotion && npm run build"
+      ]
     )
   end
 
