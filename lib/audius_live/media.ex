@@ -93,7 +93,7 @@ defmodule AudiusLive.Media do
     gifs_path = "#{video_path}/threemotion/public/gifs"
     audio_path = "#{video_path}/threemotion/public/audio.mp3"
 
-    FIle.cp_r!(threemotion_path, "#{video_path}/threemotion")
+    File.cp_r!(threemotion_path, "#{video_path}/threemotion")
 
     File.rm_rf!(gifs_path)
     File.mkdir_p!(gifs_path)
