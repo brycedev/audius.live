@@ -95,10 +95,7 @@ defmodule AudiusLive.Media do
 
     File.cp_r!(threemotion_path, "#{video_path}/threemotion")
 
-    File.rm_rf!(gifs_path)
     File.mkdir_p!(gifs_path)
-    
-    if File.exists?(audio_path) do File.rm!(audio_path) end
 
     json_file = File.read!(:code.priv_dir(:audius_live) |> Path.join("/gifs.json"))
     available_gifs = Jason.decode!(json_file)["urls"]
@@ -110,7 +107,6 @@ defmodule AudiusLive.Media do
     |> Enum.each(fn {gif, i} ->
       gif_path = "#{gifs_path}/#{i}.mp4"
       if !File.exists?(gif_path) do
-        IO.puts("Downloading gif #{i} to #{gif_path}...")
         System.cmd("curl", [
           gif,
           "-o",
@@ -132,8 +128,16 @@ defmodule AudiusLive.Media do
     System.cmd(
       "npm",
       [
+        "install"
+      ],
+      cd: "#{video_path}/threemotion"
+    )
+
+    System.cmd(
+      "npm",
+      [
         "run",
-        "go"
+        "build"
       ],
       cd: "#{video_path}/threemotion"
     )
