@@ -39,30 +39,30 @@ defmodule AudiusLive.Media do
     if !File.exists?(wav_path) do
       case System.cmd("sh", ["-c", "ffmpeg -i #{mp3_path} #{wav_path}"]) do
         {_output, 0} ->
-          
+
           {:ok, wav_path}
-        
+
         {output, _} ->
           {:error, "Conversion failed: #{output}"}
       end
     end
 
     if !File.exists?(json_path) do
-      
+
       aubio_path = :code.priv_dir(:audius_live) |> Path.join("/aubio/build/examples/aubioonset")
 
-      aubio_call = System.cmd("sh", 
+      aubio_call = System.cmd("sh",
         [
-          "-c", 
+          "-c",
           "#{aubio_path} --input #{wav_path} --onset-threshold 1"
         ]
       )
-  
+
       get_beats = elem(aubio_call, 0) |> String.split("\n")
-  
+
       onset_times = Enum.take(get_beats, Enum.count(get_beats) - 1)
         |> Enum.map(&String.to_float/1)
-  
+
       onset_time_deltas = onset_times
         |> Enum.with_index
         |> Enum.map(fn({x, i}) ->
@@ -72,10 +72,10 @@ defmodule AudiusLive.Media do
               x - Enum.at(onset_times, i - 1)
             end
           end)
-  
+
       onset_time_deltas_to_frames = Enum.map(onset_time_deltas, fn(x) -> round(x * 24) end)
       onset_time_deltas_to_frames = Enum.map(onset_time_deltas_to_frames, fn(x) -> if x == 0 do 1 else x end end)
-  
+
       File.write!(json_path, Jason.encode!(onset_time_deltas_to_frames))
 
     end
@@ -111,7 +111,7 @@ defmodule AudiusLive.Media do
     gifs
     |> Enum.with_index()
     |> Enum.each(fn {gif, i} ->
-      gif_path = Path.absname("#{gifs_path}/#{i}.mp4")
+      gif_path = "#{gifs_path}/#{i}.mp4"
       if !File.exists?(gif_path) do
         System.cmd("curl", [
           gif,
@@ -152,7 +152,7 @@ defmodule AudiusLive.Media do
     if track = AudiusLive.Repo.one(query) do
       video_path = :code.priv_dir(:audius_live) |> Path.join("/videos/#{track.audius_id}")
       track_path = :code.priv_dir(:audius_live) |> Path.join("/tracks/#{track.audius_id}")
-      File.mkdir_p!(Path.absname(video_path))
+      File.mkdir_p!(video_path)
       detect_beats(track.audius_id)
       generate_video(track.audius_id)
       if File.exists?("#{video_path}/musicvideo.mp4") do
@@ -189,7 +189,7 @@ defmodule AudiusLive.Media do
   end
 
   def upload_video_to_r2(track_id) do
-    video_path = :code.priv_dir(:audius_live) 
+    video_path = :code.priv_dir(:audius_live)
       |> Path.join("/videos/#{track_id}/musicvideo_compressed.mp4")
 
     ExAws.S3.put_object(
@@ -208,11 +208,11 @@ defmodule AudiusLive.Media do
   end
 
   def start_station() do
-    playing_track_query = 
+    playing_track_query =
       from(t in Track,
         where: t.status == :playing
       )
-    
+
     if !AudiusLive.Repo.one(playing_track_query) do
       music_video_query =
         from(t in Track,
@@ -230,7 +230,7 @@ defmodule AudiusLive.Media do
     end
   end
 
-  def prepare_next_video() do 
+  def prepare_next_video() do
     Track |> where(status: :playing) |> Repo.update_all(set: [status: :stopped])
   end
 
@@ -242,12 +242,12 @@ defmodule AudiusLive.Media do
       )
 
     if now_playing_track = AudiusLive.Repo.one(music_video_query) do
-      Track 
-        |> where(id: ^now_playing_track.id) 
+      Track
+        |> where(id: ^now_playing_track.id)
         |> Repo.update_all(set: [status: :playing, played_at:  DateTime.utc_now()])
 
         AudiusLive.Radio.play_song(
-          AudiusLive.Radio, 
+          AudiusLive.Radio,
           now_playing_track.duration,
           "https://cdn.dexterslab.sh/audiuslive/videos/#{now_playing_track.audius_id}.mp4"
         )
@@ -255,7 +255,7 @@ defmodule AudiusLive.Media do
     end
   end
 
-  def queue_next_video() do 
+  def queue_next_video() do
     if !AudiusLive.Repo.one(from(t in Track, where: t.status == :next)) do
       ready_track_query = from(t in Track,
         where: t.status == :stopped and t.has_music_video == true,
