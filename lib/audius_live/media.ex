@@ -92,22 +92,12 @@ defmodule AudiusLive.Media do
 
     gifs_path = "#{video_path}/threemotion/public/gifs"
     audio_path = "#{video_path}/threemotion/public/audio.mp3"
-    
 
-    System.cmd("cp", [
-      "-r",
-      threemotion_path,
-      video_path
-    ])
+    FIle.cp_r!(threemotion_path, "#{video_path}/threemotion")
 
-    System.cmd("rm", [
-      "-rf",
-      "#{gifs_path}/*}"
-    ])
-
-    System.cmd("rm", [
-      audio_path
-    ])
+    File.rm_rf!(gifs_path)
+    File.mkdir_p!(gifs_path)
+    File.rm!(audio_path)
 
     json_file = File.read!(:code.priv_dir(:audius_live) |> Path.join("/gifs.json"))
     available_gifs = Jason.decode!(json_file)["urls"]
@@ -128,15 +118,15 @@ defmodule AudiusLive.Media do
       end
     end)
 
-    System.cmd("cp", [
+    File.cp!(
       :code.priv_dir(:audius_live) |> Path.join("/tracks/#{track_id}/audio.mp3"),
       audio_path
-    ])
+    )
 
-    System.cmd("cp", [
+    File.cp!(
       :code.priv_dir(:audius_live) |> Path.join("/tracks/#{track_id}/beats.json"),
       "#{video_path}/threemotion/public/beats.json"
-    ])
+    )
 
     System.cmd(
       "npm",
