@@ -87,10 +87,11 @@ defmodule AudiusLive.Media do
     video_path = :code.priv_dir(:audius_live) |> Path.join("/videos/#{track_id}")
     gifs_path = "#{video_path}/threemotion/public/gifs"
     audio_path = "#{video_path}/threemotion/public/audio.mp3"
+    threemotion_path = :code.priv_dir(:audius_live) |> Path.join("/threemotion")
 
     System.cmd("cp", [
       "-r",
-      "priv/threemotion",
+      threemotion_path,
       video_path
     ])
 
