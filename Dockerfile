@@ -96,7 +96,7 @@ ENV MIX_ENV="prod"
 COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/audius_live ./
 
 RUN cd /app/lib/audius_live-0.1.0/priv/aubio && make
-RUN cd /app/lib/audius_live-0.1.0/priv/threemotion && npm install
+RUN cd /app/lib/audius_live-0.1.0/priv/threemotion && npm install --legacy-peer-deps
 
 USER nobody
 
