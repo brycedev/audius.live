@@ -80,7 +80,7 @@ RUN apt-get update -y && apt-get install -y build-essential software-properties-
 
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && apt-get install -y nodejs
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-  apt -f install google-chrome-stable_current_amd64.deb
+  apt -f install ./google-chrome-stable_current_amd64.deb
 
 # Set the locale
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
