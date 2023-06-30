@@ -6,8 +6,7 @@
 		"start": "npx remotion preview",
 		"build": "npx remotion render Scene ../musicvideo.mp4",
 		"upgrade": "remotion upgrade",
-		"test": "eslint src --ext ts,tsx,js,jsx && tsc",
-		"go": "npm install && npm run build --loglevel verbose"
+		"test": "eslint src --ext ts,tsx,js,jsx && tsc"
 	},
 	"repository": {},
 	"license": "UNLICENSED",
