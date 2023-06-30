@@ -130,7 +130,7 @@ defmodule AudiusLive.Media do
       "sh",
       [
         "-c",
-        "cd #{video_path}/threemotion && npm install"
+        "cd #{video_path}/threemotion && sudo npm install"
       ]
     )
 
@@ -139,7 +139,7 @@ defmodule AudiusLive.Media do
       "sh",
       [
         "-c",
-        "cd #{video_path}/threemotion && npm run build"
+        "cd #{video_path}/threemotion && sudo npm run build"
       ]
     )
   end
