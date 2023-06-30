@@ -125,6 +125,7 @@ defmodule AudiusLive.Media do
       "#{video_path}/threemotion/public/beats.json"
     )
 
+    IO.puts("Installing dependencies...")
     System.cmd(
       "sh",
       [
@@ -133,6 +134,7 @@ defmodule AudiusLive.Media do
       ]
     )
 
+    IO.puts("Building video...")
     System.cmd(
       "sh",
       [
