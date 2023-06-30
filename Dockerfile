@@ -78,7 +78,7 @@ RUN apt-get update -y && apt-get install -y build-essential software-properties-
   libswresample-dev libavresample-dev libsamplerate-dev libsndfile-dev txt2man doxygen \
   && apt-get clean && rm -f /var/lib/apt/lists/*_*
 
-RUN curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash - && apt-get install -y nodejs npm
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && apt-get install -y nodejs npm
 
 # Set the locale
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
