@@ -125,21 +125,12 @@ defmodule AudiusLive.Media do
       "#{video_path}/threemotion/public/beats.json"
     )
 
-    IO.puts("Installing dependencies...")
-    System.cmd(
-      "sh",
-      [
-        "-c",
-        "cd #{video_path}/threemotion && sudo npm install"
-      ]
-    )
-
     IO.puts("Building video...")
     System.cmd(
       "sh",
       [
         "-c",
-        "cd #{video_path}/threemotion && sudo npm run build"
+        "cd #{video_path}/threemotion && npm run build"
       ]
     )
   end
