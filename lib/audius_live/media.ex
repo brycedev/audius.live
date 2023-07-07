@@ -130,7 +130,7 @@ defmodule AudiusLive.Media do
       "sh",
       [
         "-c",
-        "cd #{video_path}/threemotion && npm run build --loglevel=verbose"
+        "cd #{video_path}/threemotion && npm run build"
       ]
     )
   end

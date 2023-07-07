@@ -79,6 +79,12 @@ RUN apt-get update -y && apt-get install -y build-essential software-properties-
   && apt-get clean && rm -f /var/lib/apt/lists/*_*
 
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && apt-get install -y nodejs
+RUN mkdir "${home}/.npm-packages" && echo npm_packages="${home}/.npm-packages" >> ${home}/.bashrc
+RUN echo prefix=${home}/.npm-packages >> ${home}/.npmrc 
+RUN echo node_path=\"\$npm_packages/lib/node_modules:\$node_path\" >> ${home}/.bashrc 
+RUN echo path=\"\$npm_packages/bin:\$path\" >> ${home}/.bashrc 
+RUN echo source "~/.bashrc" >> ${home}/.bash_profile 
+
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
   apt -f install -y ./google-chrome-stable_current_amd64.deb
 
@@ -91,8 +97,6 @@ ENV LC_ALL en_US.UTF-8
 
 WORKDIR /app
 
-RUN chown nobody /app
-
 # set runner ENV
 ENV MIX_ENV="prod"
 
@@ -101,6 +105,8 @@ COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/audius_live .
 
 RUN cd /app/lib/audius_live-0.1.0/priv/aubio && make
 RUN cd /app/lib/audius_live-0.1.0/priv/threemotion && npm install --legacy-peer-deps
+
+RUN chown nobody /app
 
 USER nobody
 
