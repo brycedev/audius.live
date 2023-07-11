@@ -27,6 +27,7 @@ jobs:
             MIX_ENV=prod mix compile
             echo "Setting up assets..."
             npm install --prefix assets
+            MIX_ENV=prod mix assets.deploy
             MIX_ENV=prod mix phx.digest
             echo "Releasing..."
             source .env && MIX_ENV=prod mix release --overwrite

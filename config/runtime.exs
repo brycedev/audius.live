@@ -18,6 +18,7 @@ if config_env() == :prod do
     username: System.get_env("DATABASE_USERNAME"),
     password: System.get_env("DATABASE_PASSWORD"),
     database: System.get_env("DATABASE_NAME"),
+    ssl: System.get_env("DATABASE_SSL") == "true" || false,
     socket_options: [],
     priv: "priv/repo"
 
@@ -47,6 +48,4 @@ if config_env() == :prod do
       port: port
     ],
     secret_key_base: secret_key_base
-
-
 end
