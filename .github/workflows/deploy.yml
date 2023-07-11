@@ -7,37 +7,37 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-  steps:
-    name: Deploy To DigitalOcean
-    uses: appleboy/ssh-action@master
-    with:
-      host: audius.live
-      username: root
-      key: ${{ secrets.ssh_key }}
-      port: 22
-      script_stop: true
-      script: |
-        echo "Pulling code..."
-        cd ~/audius.live
-        git submodule update --remote
-        git pull --recurse-submodules origin main
-        echo "Updating mix deps..."
-        mix deps.get --only prod
-        echo "Setting up secrets..."
-        rm config/prod.secret.server.exs
-        ln -s ~/prod.secret.exs config/prod.secret.server.exs
-        echo "Compiling..."
-        MIX_ENV=prod mix compile
-        echo "Setting up assets..."
-        npm install --prefix assets
-        npm run deploy --prefix assets
-        MIX_ENV=prod mix phx.digest
-        echo "Releasing..."
-        MIX_ENV=prod mix release --overwrite
-        MIX_ENV=prod mix ecto.migrate
-        echo "Stopping server..."
-        _build/prod/rel/audius.live/bin/audius.live stop
-        sleep 5
-        echo "Starting server..."
-        _build/prod/rel/audius.live/bin/audius.live daemon
-        echo "All done."
+    steps:
+      - name: Deploy To DigitalOcean
+        uses: appleboy/ssh-action@master
+        with:
+          host: audius.live
+          username: root
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          script_stop: true
+          script: |
+            echo "Pulling code..."
+            cd ~/audius.live
+            git submodule update --remote
+            git pull --recurse-submodules origin main
+            echo "Updating mix deps..."
+            mix deps.get --only prod
+            echo "Setting up secrets..."
+            rm config/prod.secret.server.exs
+            ln -s ~/prod.secret.exs config/prod.secret.server.exs
+            echo "Compiling..."
+            MIX_ENV=prod mix compile
+            echo "Setting up assets..."
+            npm install --prefix assets
+            npm run deploy --prefix assets
+            MIX_ENV=prod mix phx.digest
+            echo "Releasing..."
+            MIX_ENV=prod mix release --overwrite
+            MIX_ENV=prod mix ecto.migrate
+            echo "Stopping server..."
+            _build/prod/rel/audius.live/bin/audius.live stop
+            sleep 5
+            echo "Starting server..."
+            _build/prod/rel/audius.live/bin/audius.live daemon
+            echo "All done."
