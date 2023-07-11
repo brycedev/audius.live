@@ -20,7 +20,12 @@ jobs:
             echo "Pulling code..."
             cd ~/audius.live
             git submodule update --remote
+            git reset --hard
             git pull --recurse-submodules origin main
+            echo "Installing aubio" 
+            git clone https://github.com/aubio/aubio.git priv/aubio
+            cd priv/aubio && make
+            cd ~/audius.live
             echo "Updating mix deps..."
             mix deps.get --only prod
             echo "Compiling..."

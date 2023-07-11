@@ -76,7 +76,7 @@ defmodule AudiusLive.Audius do
         stream_url,
         track_id,
         track["duration"],
-        System.tmp_dir!() |> Path.join("/tracks/#{track_id}/audio.mp3")
+        System.user_home() |> Path.join("/audius_live/tracks/#{track_id}/audio.mp3")
       )
     else
       get_random_track()
