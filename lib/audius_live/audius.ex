@@ -4,6 +4,7 @@ defmodule AudiusLive.Audius do
   """
   alias AudiusLive.{Repo, Track}
   import Ecto.Query
+  require Logger
 
   def api_url_for_endpoint(endpoint) do
     url = "https://api.audius.co"

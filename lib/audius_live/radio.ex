@@ -6,6 +6,7 @@ defmodule AudiusLive.Radio do
   """
   use GenServer
   alias Phoenix.PubSub
+  require Logger
 
   def start_link(opts) do
     GenServer.start_link(__MODULE__, :ok, opts)
