@@ -70,13 +70,13 @@ defmodule AudiusLive.Audius do
 
       stream_url = AudiusLive.Audius.get_stream_url(track_id)
 
-      File.mkdir_p!(:code.priv_dir(:audius_live) |> Path.join("/tracks/#{track_id}"))
+      File.mkdir_p!(System.tmp_dir!() |> Path.join("/tracks/#{track_id}"))
 
       AudiusLive.Media.record_audio_stream(
         stream_url,
         track_id,
         track["duration"],
-        :code.priv_dir(:audius_live) |> Path.join("/tracks/#{track_id}/audio.mp3")
+        System.tmp_dir!() |> Path.join("/tracks/#{track_id}/audio.mp3")
       )
     else
       get_random_track()
