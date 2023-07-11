@@ -35,5 +35,5 @@ jobs:
             _build/prod/rel/audius.live/bin/audius.live stop
             sleep 5
             echo "Starting server..."
-            _build/prod/rel/audius.live/bin/audius.live daemon
+            source .env && _build/prod/rel/audius.live/bin/audius.live daemon
             echo "All done."
