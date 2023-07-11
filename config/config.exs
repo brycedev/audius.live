@@ -20,7 +20,6 @@ config :audius_live, AudiusLiveWeb.Endpoint,
   pubsub_server: AudiusLive.PubSub,
   live_view: [signing_salt: "i8X/PYbH"]
 
-
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.17.11",
@@ -66,7 +65,7 @@ config :audius_live, AudiusLive.Scheduler,
   jobs: [
     {"* * * * *", {AudiusLive.Audius, :discover_next_track, []}},
     {"* * * * *", {AudiusLive.Media, :start_station, []}},
-    {"*/9 * * * *", {AudiusLive.Media, :compose_music_video, []}}
+    {"*/7 * * * *", {AudiusLive.Media, :compose_music_video, []}}
   ]
 
 # Import environment specific config. This must remain at the bottom
