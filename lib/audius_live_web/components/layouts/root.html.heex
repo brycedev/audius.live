@@ -13,7 +13,10 @@
   </head>
   <body class="bg-black antialiased min-h-screen max-h-screen overflow-hidden">
     <%= @inner_content %>
-    <div id="loader" class="absolute inset-0 bg-black z-50 opacity-100 transition-opacity duration-500 ease-in-out">
+    <div
+      id="loader"
+      class="absolute inset-0 bg-black z-50 opacity-100 transition-opacity duration-500 ease-in-out"
+    >
       <div class="flex items-center justify-center h-full">
         <div class="flex flex-col items-center">
           <img
@@ -25,21 +28,5 @@
         </div>
       </div>
     </div>
-    <%!-- <header class="absolute inset-x-0 top-0 z-40">
-      <nav class="flex items-center justify-between p-6 lg:px-8">
-        <div class="hidden lg:flex lg:gap-x-12">
-          <img
-            class="h-12 w-auto"
-            src="https://dl.dropboxusercontent.com/s/rnfbn1qi63ub1xv/Stacked_White%402x.png?dl=1"
-            alt="Audius.live"
-          />
-        </div>
-        <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="#" class="text-sm font-bold leading-6 text-white">
-            LOGIN
-          </a>
-        </div>
-      </nav>
-    </header> --%>
   </body>
 </html>

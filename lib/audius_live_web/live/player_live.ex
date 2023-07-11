@@ -1,11 +1,9 @@
 defmodule AudiusLiveWeb.PlayerLive do
   use AudiusLiveWeb, :live_view
-  import Ecto.Query
 
   use Phoenix.Component
 
   alias AudiusLive.Radio
-  alias AudiusLive.Track
 
   def render(assigns) do
     ~H"""
@@ -16,11 +14,10 @@ defmodule AudiusLiveWeb.PlayerLive do
   end
 
   def mount(_params, _session, socket) do
-
     if connected?(socket) do
       Radio.subscribe()
     end
-    
+
     {:ok, socket}
   end
 
@@ -29,29 +26,30 @@ defmodule AudiusLiveWeb.PlayerLive do
 
     socket = assign(socket, status: status, time: time, duration: duration, url: url)
 
-    {:noreply, push_event(socket, "clockUpdated", %{
-      status: status,
-      time: time,
-      duration: duration,
-      url: url
-    })}
+    {:noreply,
+     push_event(socket, "clockUpdated", %{
+       status: status,
+       time: time,
+       duration: duration,
+       url: url
+     })}
   end
 
-  def handle_info(:track_updated, socket) do 
+  def handle_info(:track_updated, socket) do
     {status, time, duration, url} = Radio.get_state(Radio)
 
     socket = assign(socket, status: status, time: time, duration: duration, url: url)
 
-    {:noreply, push_event(socket, "trackUpdated", %{
-      url: url,
-      status: status,
-      time: time,
-      duration: duration
-    })}
+    {:noreply,
+     push_event(socket, "trackUpdated", %{
+       url: url,
+       status: status,
+       time: time,
+       duration: duration
+     })}
   end
 
   defp track_title(%{artist: artist}) do
     "(Now Playing) #{artist}"
   end
-
 end
