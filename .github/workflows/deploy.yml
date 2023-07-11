@@ -29,11 +29,11 @@ jobs:
             npm install --prefix assets
             MIX_ENV=prod mix phx.digest
             echo "Releasing..."
-            MIX_ENV=prod mix release --overwrite
+            source .env && MIX_ENV=prod mix release --overwrite
             MIX_ENV=prod mix ecto.migrate
             echo "Stopping server..."
             _build/prod/rel/audius.live/bin/audius.live stop
             sleep 5
             echo "Starting server..."
-            source .env && _build/prod/rel/audius.live/bin/audius.live daemon
+            _build/prod/rel/audius.live/bin/audius.live daemon
             echo "All done."
