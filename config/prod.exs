@@ -10,8 +10,9 @@ import Config
 # which you should run after static files are built and
 # before starting your production server.
 config :audius_live, AudiusLiveWeb.Endpoint,
- cache_static_manifest: "priv/static/cache_manifest.json",
- url: [host: System.get_env("PHX_HOST"), port: 80],
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  url: [host: System.get_env("PHX_HOST"), port: 80]
+
 #  force_ssl: [rewrite_on: [:x_forwarded_proto]]
 
 # Configures Swoosh API Client
