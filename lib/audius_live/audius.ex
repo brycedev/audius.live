@@ -15,14 +15,14 @@ defmodule AudiusLive.Audius do
 
   def track_is_valid?(track) do
     duration = track["duration"]
-    
+
     query =
       from(t in AudiusLive.Track,
         where: t.audius_id == ^track["id"],
         limit: 1
       )
 
-    cond do 
+    cond do
       track["is_streamable"] == false -> false
       duration > 150 -> false
       AudiusLive.Repo.one(query) -> false
@@ -53,13 +53,9 @@ defmodule AudiusLive.Audius do
 
     track_results = req["data"]
 
-    if !length(track_results) do
-      get_random_track()
-    end
-
     track = Enum.random(track_results)
 
-    if track_is_valid?(track) do
+    if track && track_is_valid?(track) do
       Repo.insert(%Track{
         audius_id: track["id"],
         artist: track["user"]["name"],
@@ -67,7 +63,7 @@ defmodule AudiusLive.Audius do
         title: track["title"]
       })
 
-      IO.puts("Discovered new track: #{track["title"]} by #{track["user"]["name"]}")
+      Logger.info("Discovered new track: #{track["title"]} by #{track["user"]["name"]}")
 
       track_id = track["id"]
 
@@ -81,7 +77,6 @@ defmodule AudiusLive.Audius do
         track["duration"],
         :code.priv_dir(:audius_live) |> Path.join("/tracks/#{track_id}/audio.mp3")
       )
-      
     else
       get_random_track()
     end

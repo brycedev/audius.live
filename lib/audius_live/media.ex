@@ -5,6 +5,7 @@ defmodule AudiusLive.Media do
   alias Phoenix.PubSub
   alias AudiusLive.{Track, Repo}
   import Ecto.Query
+  require Logger
 
   def record_audio_stream(url, track_id, duration, output_file_path) do
     {_output, status} =
@@ -31,7 +32,7 @@ defmodule AudiusLive.Media do
   end
 
   def detect_beats(track_id) do
-    IO.puts("Detecting beats...")
+    Logger.info("Detecting beats...")
 
     mp3_path = :code.priv_dir(:audius_live) |> Path.join("/tracks/#{track_id}/audio.mp3")
     wav_path = :code.priv_dir(:audius_live) |> Path.join("/tracks/#{track_id}/audio.wav")
@@ -95,7 +96,7 @@ defmodule AudiusLive.Media do
   end
 
   def generate_video(track_id) do
-    IO.puts("Generating video...")
+    Logger.info("Generating video...")
 
     threemotion_path = :code.priv_dir(:audius_live) |> Path.join("/threemotion")
 
@@ -138,13 +139,13 @@ defmodule AudiusLive.Media do
       "#{video_path}/threemotion/public/beats.json"
     )
 
-    IO.puts("Building video...")
+    Logger.info("Building video...")
 
     System.cmd(
       "sh",
       [
         "-c",
-        "cd #{video_path}/threemotion && npm run build"
+        "cd #{video_path}/threemotion && npm run install && npm run build"
       ]
     )
   end
@@ -165,6 +166,8 @@ defmodule AudiusLive.Media do
       generate_video(track.audius_id)
 
       if File.exists?("#{video_path}/musicvideo.mp4") do
+        Logger.info("Compressing video...")
+
         System.cmd("ffmpeg", [
           "-hide_banner",
           "-logevel",
@@ -213,10 +216,10 @@ defmodule AudiusLive.Media do
 
     case HTTPoison.get("https://cdn.dexterslab.sh/audiuslive/videos/#{track_id}.mp4") do
       {:ok, %{status_code: 200}} ->
-        IO.puts("Video upload successful")
+        Logger.info("Video upload successful")
 
       _ ->
-        IO.puts("Video upload failed")
+        Logger.error("Video upload failed")
         upload_video_to_r2(track_id)
     end
   end

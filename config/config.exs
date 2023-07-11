@@ -43,9 +43,18 @@ config :tailwind,
   ]
 
 # Configures Elixir's Logger
-config :logger, :console,
+config :logger,
+  backends: [:console, {LoggerFileBackend, :error_log}, {LoggerFileBackend, :info_log}],
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
+
+config :logger, :error_log,
+  path: "/var/log/audius_live/error.log",
+  level: :error
+
+config :logger, :info_log,
+  path: "/var/log/audius_live/info.log",
+  level: :info
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason

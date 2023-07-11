@@ -12,7 +12,7 @@ defmodule AudiusLive.Radio do
   end
 
   def play_song(clock, duration, url) do
-    IO.puts("Clock started for #{duration} seconds")
+    Logger.info("Clock started for #{duration} seconds")
     GenServer.call(clock, {:start, duration, url})
   end
 
@@ -47,7 +47,7 @@ defmodule AudiusLive.Radio do
 
   @impl true
   def handle_info(:tick, {status, time, duration, url}) do
-    if time < duration do 
+    if time < duration do
       Process.send_after(self(), :tick, 1000)
       notify()
       {:noreply, {status, time + 1, duration, url}}
