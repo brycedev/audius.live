@@ -34,6 +34,7 @@ jobs:
             MIX_ENV=prod mix ecto.migrate
             echo "Stopping server..."
             _build/prod/rel/audius_live/bin/audius_live stop
+            sleep 2
             echo "Starting server..."
             source .env && _build/prod/rel/audius_live/bin/audius_live daemon
             echo "All done."

@@ -35,7 +35,7 @@ if config_env() == :prod do
       """
 
   host = System.get_env("PHX_HOST") || "example.com"
-  port = String.to_integer(System.get_env("PORT") || 80)
+  port = String.to_integer(System.get_env("PHX_PORT") || 80)
 
   config :audius_live, AudiusLiveWeb.Endpoint,
     url: [host: host, port: 80],
