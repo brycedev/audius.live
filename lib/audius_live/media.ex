@@ -52,7 +52,7 @@ defmodule AudiusLive.Media do
     end
 
     if !File.exists?(json_path) do
-      aubio_path = :code.priv_dir() |> Path.join("/aubio/build/examples/aubioonset")
+      aubio_path = :code.priv_dir(:audius_live) |> Path.join("/aubio/build/examples/aubioonset")
 
       aubio_call =
         System.cmd(
@@ -98,7 +98,7 @@ defmodule AudiusLive.Media do
   def generate_video(track_id) do
     Logger.info("Generating video...")
 
-    threemotion_path = :code.priv_dir() |> Path.join("/threemotion")
+    threemotion_path = :code.priv_dir(:audius_live) |> Path.join("/threemotion")
 
     video_path = System.user_home() |> Path.join("/audius_live/videos/#{track_id}")
     File.mkdir_p!(video_path)
@@ -110,7 +110,7 @@ defmodule AudiusLive.Media do
 
     File.mkdir_p!(gifs_path)
 
-    json_file = File.read!(:code.priv_dir() |> Path.join("/gifs.json"))
+    json_file = File.read!(:code.priv_dir(:audius_live) |> Path.join("/gifs.json"))
     available_gifs = Jason.decode!(json_file)["urls"]
     gifs = Enum.take_random(available_gifs, 32)
 
