@@ -23,9 +23,6 @@ jobs:
             git pull --recurse-submodules origin main
             echo "Updating mix deps..."
             mix deps.get --only prod
-            echo "Setting up secrets..."
-            rm config/prod.secret.server.exs
-            ln -s ~/prod.secret.exs config/prod.secret.server.exs
             echo "Compiling..."
             MIX_ENV=prod mix compile
             echo "Setting up assets..."
