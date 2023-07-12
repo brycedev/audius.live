@@ -70,7 +70,9 @@ defmodule AudiusLive.Audius do
 
       stream_url = AudiusLive.Audius.get_stream_url(track_id)
 
-      File.mkdir_p!(System.user_home() |> Path.join("/audius_live/tracks/#{track_id}"))
+      track_path = System.user_home() |> Path.join("/audius_live/tracks/#{track_id}")
+
+      File.mkdir_p!(track_path)
 
       Logger.info("Downloading audio stream for track #{track_id}")
 
