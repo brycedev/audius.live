@@ -33,9 +33,6 @@ jobs:
             echo "Releasing..."
             source .env && MIX_ENV=prod mix release --overwrite
             MIX_ENV=prod mix ecto.migrate
-            echo "Stopping server..."
-            _build/prod/rel/audius_live/bin/audius_live stop
-            sleep 2
-            echo "Starting server..."
-            source .env && _build/prod/rel/audius_live/bin/audius_live daemon
+            echo "Restarting server..."
+            source .env && _build/prod/rel/audius_live/bin/audius_live restart
             echo "All done."
