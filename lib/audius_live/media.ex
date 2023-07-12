@@ -170,7 +170,7 @@ defmodule AudiusLive.Media do
 
         System.cmd("ffmpeg", [
           "-hide_banner",
-          "-logevel",
+          "-loglevel",
           "error",
           "-i",
           "#{video_path}/musicvideo.mp4",
