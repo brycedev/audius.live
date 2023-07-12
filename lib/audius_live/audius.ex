@@ -72,6 +72,8 @@ defmodule AudiusLive.Audius do
 
       File.mkdir_p!(System.user_home() |> Path.join("/audius_live/tracks/#{track_id}"))
 
+      Logger.info("Downloading audio stream for track #{track_id}")
+
       AudiusLive.Media.record_audio_stream(
         stream_url,
         track_id,
