@@ -227,10 +227,10 @@ defmodule AudiusLive.Media do
         ])
       end
 
-      System.cmd("rm", [
-        "-rf",
-        video_path
-      ])
+      # System.cmd("rm", [
+      #   "-rf",
+      #   video_path
+      # ])
     end
   end
 
