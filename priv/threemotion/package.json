@@ -4,7 +4,7 @@
 	"description": "A React Three Fiber Project",
 	"scripts": {
 		"start": "npx remotion preview",
-		"build": "npx remotion render Scene {videoout}",
+		"build": "npx remotion render Scene videoout",
 		"upgrade": "remotion upgrade",
 		"test": "eslint src --ext ts,tsx,js,jsx && tsc"
 	},

@@ -162,7 +162,7 @@ defmodule AudiusLive.Media do
       "sed",
       [
         "-i",
-        "'s/{videoout}/#{video_output}/g'",
+        "'s/videoout/#{video_output}/'",
         "package.json"
       ],
       cd: "#{video_path}/threemotion"
