@@ -154,6 +154,16 @@ defmodule AudiusLive.Media do
 
     Logger.info("Building threemotion video...")
 
+    video_output = "#{video_path}/musicvideo.mp4"
+
+    Logger.info("Video output: #{video_output}")
+
+    System.cmd("sed", [
+      "-i",
+      "'s/{videout}/#{video_output}/g'",
+      "#{video_path}/threemotion/package.json"
+    ])
+
     System.cmd(
       "npm",
       [
