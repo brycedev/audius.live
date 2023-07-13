@@ -179,6 +179,10 @@ defmodule AudiusLive.Media do
       detect_beats(track.audius_id)
       generate_video(track.audius_id)
 
+      Logger.info("Generated music video")
+
+      Logger.info("Checking for file existence...")
+
       if File.exists?("#{video_path}/musicvideo.mp4") do
         Logger.info("Compressing video...")
 
@@ -217,6 +221,8 @@ defmodule AudiusLive.Media do
   end
 
   def upload_video_to_r2(track_id) do
+    Logger.info("Uploading video to R2...")
+
     video_path =
       System.user_home()
       |> Path.join("/audius_live/videos/#{track_id}/musicvideo_compressed.mp4")
