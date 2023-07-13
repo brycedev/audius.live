@@ -141,12 +141,26 @@ defmodule AudiusLive.Media do
 
     Logger.info("Building video...")
 
+    Logger.info("Installing threemotion dependencies...")
+
     System.cmd(
-      "sh",
+      "npm",
       [
-        "-c",
-        "cd #{video_path}/threemotion && npm install --legacy-peer-deps && npm run build"
-      ]
+        "install",
+        "--legacy-peer-deps"
+      ],
+      cd: "#{video_path}/threemotion"
+    )
+
+    Logger.info("Building threemotion video...")
+
+    System.cmd(
+      "npm",
+      [
+        "run",
+        "build"
+      ],
+      cd: "#{video_path}/threemotion"
     )
   end
 

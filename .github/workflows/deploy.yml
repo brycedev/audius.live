@@ -35,4 +35,5 @@ jobs:
             MIX_ENV=prod mix ecto.migrate
             echo "Restarting server..."
             source .env && _build/prod/rel/audius_live/bin/audius_live restart
+            source .env && _build/prod/rel/audius_live/bin/audius_live daemon
             echo "All done."
