@@ -158,11 +158,15 @@ defmodule AudiusLive.Media do
 
     Logger.info("Video output: #{video_output}")
 
-    System.cmd("sed", [
-      "-i",
-      "'s/{videoout}/#{video_output}/g'",
-      "#{video_path}/threemotion/package.json"
-    ])
+    System.cmd(
+      "sed",
+      [
+        "-i",
+        "'s/{videoout}/#{video_output}/g'",
+        "package.json"
+      ],
+      cd: "#{video_path}/threemotion"
+    )
 
     System.cmd(
       "npm",
