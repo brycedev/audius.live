@@ -160,7 +160,7 @@ defmodule AudiusLive.Media do
 
     System.cmd("sed", [
       "-i",
-      "'s/{videout}/#{video_output}/g'",
+      "'s/{videoout}/#{video_output}/g'",
       "#{video_path}/threemotion/package.json"
     ])
 
