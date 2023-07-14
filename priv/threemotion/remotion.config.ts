@@ -1,5 +1,5 @@
-import {Config} from 'remotion';
+import {Config} from "@remotion/cli/config"
 
-Config.setImageFormat('jpeg');
+Config.setVideoImageFormat('jpeg');
 Config.setChromiumOpenGlRenderer('angle');
 Config.setMaxTimelineTracks(100);

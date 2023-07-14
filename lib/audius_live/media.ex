@@ -186,14 +186,14 @@ defmodule AudiusLive.Media do
       cd: "#{video_path}/threemotion/src"
     )
 
-    # System.cmd(
-    #   "npm",
-    #   [
-    #     "run",
-    #     "build"
-    #   ],
-    #   cd: "#{video_path}/threemotion"
-    # )
+    System.cmd(
+      "npm",
+      [
+        "run",
+        "build"
+      ],
+      cd: "#{video_path}/threemotion"
+    )
   end
 
   def compose_music_video() do
