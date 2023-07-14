@@ -16,7 +16,7 @@ const composition = await selectComposition({
   serveUrl: bundleLocation,
   id: compositionId,
   chromiumOptions: {
-    gl: "angle"
+    gl: "swangle"
   }
 });
  
@@ -27,7 +27,7 @@ await renderMedia({
   codec: "h264",
   outputLocation: `videoout`,
   chromiumOptions: {
-    gl: "angle"
+    gl: "swangle"
   }
   
 });
