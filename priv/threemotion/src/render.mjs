@@ -7,7 +7,7 @@ const compositionId = "Scene";
  
 // You only have to create a bundle once, and you may reuse it
 const bundleLocation = await bundle({
-  entryPoint: path.resolve("./src/index.ts"),
+  entryPoint: path.resolve("./index.ts"),
   // If you have a Webpack override, make sure to add it here
   webpackOverride: (config) => config,
 });
