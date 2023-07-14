@@ -169,13 +169,31 @@ defmodule AudiusLive.Media do
     )
 
     System.cmd(
-      "npm",
+      "sed",
       [
-        "run",
-        "build"
+        "-i",
+        "s|videoout|#{video_output}|g",
+        "render.mjs"
       ],
-      cd: "#{video_path}/threemotion"
+      cd: "#{video_path}/threemotion/src"
     )
+
+    System.cmd(
+      "node",
+      [
+        "render.mjs"
+      ],
+      cd: "#{video_path}/threemotion/src"
+    )
+
+    # System.cmd(
+    #   "npm",
+    #   [
+    #     "run",
+    #     "build"
+    #   ],
+    #   cd: "#{video_path}/threemotion"
+    # )
   end
 
   def compose_music_video() do
