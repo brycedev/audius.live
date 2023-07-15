@@ -158,25 +158,53 @@ defmodule AudiusLive.Media do
 
     Logger.info("Video output: #{video_output}")
 
-    System.cmd(
-      "sed",
-      [
-        "-i",
-        "s|videoout|#{video_output}|g",
-        "package.json"
-      ],
-      cd: "#{video_path}/threemotion"
-    )
+    
 
-    System.cmd(
-      "sed",
-      [
-        "-i",
-        "s|videoout|#{video_output}|g",
-        "render.mjs"
-      ],
-      cd: "#{video_path}/threemotion/src"
-    )
+    case :os.type() do
+      {:unix, :darwin} ->
+        System.cmd(
+          "sed",
+          [
+            "-i",
+            "''",
+            "s|videoout|#{video_output}|g",
+            "render.mjs"
+          ],
+          cd: "#{video_path}/threemotion/src"
+        )
+        System.cmd(
+          "sed",
+          [
+            "-i",
+            "''",
+            "s|videoout|#{video_output}|g",
+            "package.json"
+          ],
+          cd: "#{video_path}/threemotion"
+        )
+
+      {:unix, _} ->
+        System.cmd(
+          "sed",
+          [
+            "-i",
+            "s|videoout|#{video_output}|g",
+            "render.mjs"
+          ],
+          cd: "#{video_path}/threemotion/src"
+        )
+        System.cmd(
+          "sed",
+          [
+            "-i",
+            "s|videoout|#{video_output}|g",
+            "package.json"
+          ],
+          cd: "#{video_path}/threemotion"
+        )
+    end
+
+    
 
     System.cmd(
       "node",
