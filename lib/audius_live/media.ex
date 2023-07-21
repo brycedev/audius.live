@@ -156,10 +156,6 @@ defmodule AudiusLive.Media do
 
     video_output = "#{video_path}/musicvideo.mp4"
 
-    Logger.info("Video output: #{video_output}")
-
-    
-
     case :os.type() do
       {:unix, :darwin} ->
         System.cmd(
