@@ -204,16 +204,6 @@ defmodule AudiusLive.Media do
         )
     end
 
-    
-
-    System.cmd(
-      "node",
-      [
-        "render.mjs"
-      ],
-      cd: "#{video_path}/threemotion/src"
-    )
-
     System.cmd(
       "npm",
       [
@@ -253,7 +243,7 @@ defmodule AudiusLive.Media do
           "-i",
           "#{video_path}/musicvideo.mp4",
           "-c:v",
-          "libx265",
+          "libx264",
           "-crf",
           "28",
           "#{video_path}/musicvideo_compressed.mp4"
@@ -271,12 +261,12 @@ defmodule AudiusLive.Media do
           "-rf",
           track_path
         ])
-      end
 
-      # System.cmd("rm", [
-      #   "-rf",
-      #   video_path
-      # ])
+        System.cmd("rm", [
+          "-rf",
+          video_path
+        ])
+      end
     end
   end
 
