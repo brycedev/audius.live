@@ -6,15 +6,7 @@ NODE_VERSION=16
 
 # Install basic packages
 apt-get -qq update
-apt-get install -y \
-wget \
-git \
-unzip \
-build-essential \
-curl \ 
-ffmpeg \
-chromium-browser \
-python
+apt-get install -y wget git unzip build-essential curl ffmpeg chromium-browser python
 
 # Install Erlang
 echo "deb http://packages.erlang-solutions.com/ubuntu bionic contrib" >> /etc/apt/sources.list && \
@@ -31,7 +23,7 @@ git checkout v$ELIXIR_VERSION && \
 make && \
 make install
 
-'/usr/local/bin/mix local.hex --force && /usr/local/bin/mix local.rebar --force'
+/usr/local/bin/mix local.hex --force && /usr/local/bin/mix local.rebar --force
 
 # Install nodejs and npm
 curl -sL https://deb.nodesource.com/setup_$NODE_VERSION.x | sudo -E bash -
@@ -41,6 +33,6 @@ apt-get install -y nodejs
 ufw allow 80
 ufw allow 443
 
-# Install project
+# Install aubio
 cd ~/audius.live/priv && git clone https://github.com/aubio/aubio.git
 cd aubio && make && make install
