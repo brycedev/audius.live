@@ -23,16 +23,16 @@ jobs:
             git reset --hard
             git pull --recurse-submodules origin main
             echo "Updating mix deps..."
-            /root/.asdf/shims/mix deps.get --only prod
+            /usr/bin/mix deps.get --only prod
             echo "Compiling..."
-            MIX_ENV=prod /root/.asdf/shims/mix compile
+            MIX_ENV=prod /usr/bin/mix compile
             echo "Setting up assets..."
             npm install --prefix assets
-            MIX_ENV=prod /root/.asdf/shims/mix assets.deploy
-            MIX_ENV=prod /root/.asdf/shims/mix phx.digest
+            MIX_ENV=prod /usr/bin/mix assets.deploy
+            MIX_ENV=prod /usr/bin/mix phx.digest
             echo "Releasing..."
-            source .env && MIX_ENV=prod /root/.asdf/shims/mix release --overwrite
-            MIX_ENV=prod /root/.asdf/shims/mix ecto.migrate
+            source .env && MIX_ENV=prod /usr/bin/mix release --overwrite
+            MIX_ENV=prod /usr/bin/mix ecto.migrate
             echo "Restarting server..."
             source .env && _build/prod/rel/audius_live/bin/audius_live restart
             source .env && _build/prod/rel/audius_live/bin/audius_live daemon
