@@ -234,24 +234,24 @@ defmodule AudiusLive.Media do
       Logger.info("Checking for file existence...")
 
       if File.exists?("#{video_path}/musicvideo.mp4") do
-        Logger.info("Compressing video...")
+        # Logger.info("Compressing video...")
 
-        System.cmd("ffmpeg", [
-          "-hide_banner",
-          "-loglevel",
-          "error",
-          "-i",
-          "#{video_path}/musicvideo.mp4",
-          "-c:v",
-          "libx264",
-          "-crf",
-          "28",
-          "#{video_path}/musicvideo_compressed.mp4"
-        ])
+        # System.cmd("ffmpeg", [
+        #   "-hide_banner",
+        #   "-loglevel",
+        #   "error",
+        #   "-i",
+        #   "#{video_path}/musicvideo.mp4",
+        #   "-c:v",
+        #   "libx264",
+        #   "-crf",
+        #   "28",
+        #   "#{video_path}/musicvideo_compressed.mp4"
+        # ])
 
-        System.cmd("rm", [
-          "#{video_path}/musicvideo.mp4"
-        ])
+        # System.cmd("rm", [
+        #   "#{video_path}/musicvideo.mp4"
+        # ])
 
         upload_video_to_r2(track.audius_id)
 
@@ -275,7 +275,7 @@ defmodule AudiusLive.Media do
 
     video_path =
       System.user_home()
-      |> Path.join("/audius_live/videos/#{track_id}/musicvideo_compressed.mp4")
+      |> Path.join("/audius_live/videos/#{track_id}/musicvideo.mp4")
 
     ExAws.S3.put_object(
       "dexterslab",
