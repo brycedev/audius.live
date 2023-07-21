@@ -13,7 +13,8 @@ unzip \
 build-essential \
 curl \ 
 ffmpeg \
-chromium-browser
+chromium-browser \
+python
 
 # Install Erlang
 echo "deb http://packages.erlang-solutions.com/ubuntu bionic contrib" >> /etc/apt/sources.list && \
@@ -39,3 +40,7 @@ apt-get install -y nodejs
 # Firewall
 ufw allow 80
 ufw allow 443
+
+# Install project
+cd ~/audius.live/priv && git clone https://github.com/aubio/aubio.git
+cd aubio && make && make install
