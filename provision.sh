@@ -8,6 +8,9 @@ NODE_VERSION=16
 apt-get -qq update
 apt-get install -y wget git unzip build-essential curl ffmpeg chromium-browser python
 
+# Install aubio  
+pip install aubio
+
 # Install Erlang
 echo "deb http://packages.erlang-solutions.com/ubuntu bionic contrib" >> /etc/apt/sources.list && \
 apt-key adv --fetch-keys http://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc && \
@@ -32,7 +35,3 @@ apt-get install -y nodejs
 # Firewall
 ufw allow 80
 ufw allow 443
-
-# Install aubio
-cd ~/audius.live/priv && git clone https://github.com/aubio/aubio.git
-cd aubio && make && make install

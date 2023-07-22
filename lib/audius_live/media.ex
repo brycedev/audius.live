@@ -52,18 +52,16 @@ defmodule AudiusLive.Media do
     end
 
     if !File.exists?(json_path) do
-      aubio_path = :code.priv_dir(:audius_live) |> Path.join("/aubio/build/examples/aubioonset")
-
       aubio_call =
         System.cmd(
-          "sh",
+          "aubio",
           [
-            "-c",
-            "#{aubio_path} --input #{wav_path} --onset-threshold 1"
+            "onset",
+            "--input",
+            "#{wav_path}"
           ]
         )
-
-      get_beats = elem(aubio_call, 0) |> String.split("\n")
+      get_beats = elem(aubio_call, 0) |> String.split("\t\n")
 
       onset_times =
         Enum.take(get_beats, Enum.count(get_beats) - 1)
@@ -126,6 +124,27 @@ defmodule AudiusLive.Media do
           "-o",
           gif_path
         ])
+
+        type = System.cmd("sh", [
+          "-c",
+          "ffprobe -loglevel quiet -i #{gif_path} -show_entries format=format_name | grep -o 'format_name=.*' | cut -f2- -d="
+        ])
+
+        if type == "gif" do
+          System.cmd("ffmpeg", [
+            "-i",
+            "#{gif_path}",
+            "-pix_fmt",
+            "yuv420p",
+            "-vf",
+            "scale=trunc(iw/2)*2:trunc(ih/2)*2",
+            "#{gifs_path}/#{i}_new.mp4"
+          ])
+
+          File.rm!(gif_path)
+          File.rename!("#{gifs_path}/#{i}_new.mp4", gif_path)
+        end
+
       end
     end)
 
@@ -163,32 +182,13 @@ defmodule AudiusLive.Media do
           [
             "-i",
             "''",
-            "s|videoout|#{video_output}|g",
-            "render.mjs"
-          ],
-          cd: "#{video_path}/threemotion/src"
-        )
-        System.cmd(
-          "sed",
-          [
-            "-i",
-            "''",
-            "s|videoout|#{video_output}|g",
+            ~s(s|videoout|#{video_output}|g),
             "package.json"
           ],
           cd: "#{video_path}/threemotion"
         )
 
       {:unix, _} ->
-        System.cmd(
-          "sed",
-          [
-            "-i",
-            "s|videoout|#{video_output}|g",
-            "render.mjs"
-          ],
-          cd: "#{video_path}/threemotion/src"
-        )
         System.cmd(
           "sed",
           [
@@ -230,24 +230,24 @@ defmodule AudiusLive.Media do
       Logger.info("Checking for file existence...")
 
       if File.exists?("#{video_path}/musicvideo.mp4") do
-        # Logger.info("Compressing video...")
+        Logger.info("Compressing video...")
 
-        # System.cmd("ffmpeg", [
-        #   "-hide_banner",
-        #   "-loglevel",
-        #   "error",
-        #   "-i",
-        #   "#{video_path}/musicvideo.mp4",
-        #   "-c:v",
-        #   "libx264",
-        #   "-crf",
-        #   "28",
-        #   "#{video_path}/musicvideo_compressed.mp4"
-        # ])
+        System.cmd("ffmpeg", [
+          "-hide_banner",
+          "-loglevel",
+          "error",
+          "-i",
+          "#{video_path}/musicvideo.mp4",
+          "-c:v",
+          "libx265",
+          "-crf",
+          "28",
+          "#{video_path}/musicvideo_compressed.mp4"
+        ])
 
-        # System.cmd("rm", [
-        #   "#{video_path}/musicvideo.mp4"
-        # ])
+        System.cmd("rm", [
+          "#{video_path}/musicvideo.mp4"
+        ])
 
         upload_video_to_r2(track.audius_id)
 
@@ -271,7 +271,7 @@ defmodule AudiusLive.Media do
 
     video_path =
       System.user_home()
-      |> Path.join("/audius_live/videos/#{track_id}/musicvideo.mp4")
+      |> Path.join("/audius_live/videos/#{track_id}/musicvideo_compressed.mp4")
 
     ExAws.S3.put_object(
       "dexterslab",
