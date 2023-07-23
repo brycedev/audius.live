@@ -5,6 +5,7 @@ ELIXIR_VERSION=1.14.5
 NODE_VERSION=16
 
 # Install basic packages
+apt-get dist-upgrade
 apt-get -qq update
 apt-get install -y wget git unzip build-essential curl ffmpeg chromium-browser python
 
