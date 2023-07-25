@@ -62,7 +62,7 @@ defmodule AudiusLive.Media do
           [
             "onset",
             "--input",
-            "#{wav_path}"
+            "#{wav_path}",
             "--onset-threshold",
             "0.65",
           ]
