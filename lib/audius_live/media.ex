@@ -179,30 +179,17 @@ defmodule AudiusLive.Media do
 
     video_output = "#{video_path}/musicvideo.mp4"
 
-    case :os.type() do
-      {:unix, :darwin} ->
-        System.cmd(
-          "sed",
-          [
-            "-i",
-            "''",
-            ~s(s|videoout|#{video_output}|g),
-            "package.json"
-          ],
-          cd: "#{video_path}/threemotion"
-        )
-
-      {:unix, _} ->
-        System.cmd(
-          "sed",
-          [
-            "-i",
-            "s|videoout|#{video_output}|g",
-            "package.json"
-          ],
-          cd: "#{video_path}/threemotion"
-        )
-    end
+    System.cmd(
+      "sed",
+      [
+        "-i",
+        "''",
+        ~s("s|videoout|#{video_output}|g"),
+        "package.json"
+      ],
+      cd: "#{video_path}/threemotion"
+    )
+      
 
     System.cmd(
       "npm",
