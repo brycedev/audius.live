@@ -186,12 +186,11 @@ defmodule AudiusLive.Media do
       [
         "-i",
         "''",
-        ~s("s|videoout|#{video_output}|g"),
+        ~s(s|videoout|#{video_output}|g),
         "package.json"
       ],
       cd: "#{video_path}/threemotion"
     )
-      
 
     System.cmd(
       "npm",
