@@ -63,6 +63,8 @@ defmodule AudiusLive.Media do
             "onset",
             "--input",
             "#{wav_path}"
+            "--onset-threshold",
+            "0.65",
           ]
         )
       get_beats = elem(aubio_call, 0) |> String.split("\t\n")
