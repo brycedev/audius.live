@@ -39,9 +39,13 @@ defmodule AudiusLive.Media do
     json_path = System.user_home() |> Path.join("/audius_live/tracks/#{track_id}/beats.json")
 
     if !File.exists?(wav_path) do
-      case System.cmd("sh", [
-             "-c",
-             "ffmpeg -hide_banner -loglevel error -i #{mp3_path} #{wav_path}"
+      case System.cmd("ffmpeg", [
+             "-hide_banner",
+             "-loglevel",
+             "error",
+             "-i",
+             "#{mp3_path}",
+             "#{wav_path}"
            ]) do
         {_output, 0} ->
           {:ok, wav_path}
