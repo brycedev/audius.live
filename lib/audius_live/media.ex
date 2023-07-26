@@ -35,25 +35,7 @@ defmodule AudiusLive.Media do
     Logger.info("Detecting beats...")
 
     mp3_path = System.user_home() |> Path.join("/audius_live/tracks/#{track_id}/audio.mp3")
-    wav_path = System.user_home() |> Path.join("/audius_live/tracks/#{track_id}/audio.wav")
     json_path = System.user_home() |> Path.join("/audius_live/tracks/#{track_id}/beats.json")
-
-    if !File.exists?(wav_path) do
-      case System.cmd("ffmpeg", [
-             "-hide_banner",
-             "-loglevel",
-             "error",
-             "-i",
-             "#{mp3_path}",
-             "#{wav_path}"
-           ]) do
-        {_output, 0} ->
-          {:ok, wav_path}
-
-        {output, _} ->
-          {:error, "Conversion failed: #{output}"}
-      end
-    end
 
     if !File.exists?(json_path) do
       aubio_call =
@@ -61,7 +43,7 @@ defmodule AudiusLive.Media do
           "aubioonset",
           [
             "-i",
-            "#{wav_path}",
+            "#{mp3_path}",
             "-t",
             "0.5",
           ]
@@ -282,7 +264,7 @@ defmodule AudiusLive.Media do
   end
 
   def start_station() do
-    Logger.info("Starting station...")
+    
     playing_track_query =
       from(t in Track,
         where: t.status == :playing
@@ -301,11 +283,13 @@ defmodule AudiusLive.Media do
         queue_next_video()
       end
 
+      Logger.info("Starting station...")
+
       play_next_video()
     end
   end
 
-  def prepare_next_video() do
+  def stop_video() do
     Track |> where(status: :playing) |> Repo.update_all(set: [status: :stopped])
   end
 

@@ -55,8 +55,7 @@ defmodule AudiusLive.Radio do
     else
       if time >= duration do
         notify()
-        AudiusLive.Media.prepare_next_video()
-        AudiusLive.Media.queue_next_video()
+        AudiusLive.Media.stop_video()
         {:noreply, {:stopped, 0, 0, nil}}
       end
     end
