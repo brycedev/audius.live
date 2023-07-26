@@ -290,6 +290,7 @@ defmodule AudiusLive.Media do
   end
 
   def stop_video() do
+    Logger.info("Stopping video...")
     Track |> where(status: :playing) |> Repo.update_all(set: [status: :stopped])
   end
 
