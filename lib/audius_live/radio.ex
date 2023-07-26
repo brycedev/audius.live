@@ -57,7 +57,6 @@ defmodule AudiusLive.Radio do
         notify()
         AudiusLive.Media.prepare_next_video()
         AudiusLive.Media.queue_next_video()
-        AudiusLive.Media.play_next_video()
         {:noreply, {:stopped, 0, 0, nil}}
       end
     end
