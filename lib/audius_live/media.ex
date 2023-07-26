@@ -283,6 +283,7 @@ defmodule AudiusLive.Media do
   end
 
   def start_station() do
+    Logger.info("Starting station...")
     playing_track_query =
       from(t in Track,
         where: t.status == :playing
@@ -310,6 +311,7 @@ defmodule AudiusLive.Media do
   end
 
   def play_next_video() do
+    Logger.info("Playing next video...")
     music_video_query =
       from(t in Track,
         where: t.status == :next,
@@ -332,6 +334,7 @@ defmodule AudiusLive.Media do
   end
 
   def queue_next_video() do
+    Logger.info("Queueing next video...")
     if !AudiusLive.Repo.one(from(t in Track, where: t.status == :next)) do
       ready_track_query =
         from(t in Track,

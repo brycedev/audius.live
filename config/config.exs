@@ -74,7 +74,7 @@ config :audius_live, AudiusLive.Scheduler,
   jobs: [
     {"* * * * *", {AudiusLive.Audius, :discover_next_track, []}},
     {"* * * * *", {AudiusLive.Media, :start_station, []}},
-    {"*/7 * * * *", {AudiusLive.Media, :compose_music_video, []}}
+    {"*/5 * * * *", {AudiusLive.Media, :compose_music_video, []}}
   ]
 
 # Import environment specific config. This must remain at the bottom
