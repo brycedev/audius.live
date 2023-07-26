@@ -58,13 +58,12 @@ defmodule AudiusLive.Media do
     if !File.exists?(json_path) do
       aubio_call =
         System.cmd(
-          "aubio",
+          "aubioonset",
           [
-            "onset",
-            "--input",
+            "-i",
             "#{wav_path}",
-            "--onset-threshold",
-            "0.65",
+            "-t",
+            "0.5",
           ]
         )
       get_beats = elem(aubio_call, 0) |> String.split("\t\n")
