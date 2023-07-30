@@ -49,8 +49,11 @@ defmodule AudiusLive.Media do
           ]
         )
       
-      IO.inspect(aubio_call)
       get_beats = elem(aubio_call, 0) |> String.split("\n")
+
+      if Enum.count(get_beats) == 1 do
+        get_beats = get_beats[0] |> String.split("\n") 
+      end
 
       IO.inspect(get_beats)
 
