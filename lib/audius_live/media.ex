@@ -48,7 +48,7 @@ defmodule AudiusLive.Media do
             "0.5",
           ]
         )
-      get_beats = elem(aubio_call, 0) |> String.split("\t\n")
+      get_beats = elem(aubio_call, 0) |> String.split("\n")
 
       IO.inspect(get_beats)
 
