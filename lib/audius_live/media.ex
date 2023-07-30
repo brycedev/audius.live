@@ -218,23 +218,23 @@ defmodule AudiusLive.Media do
           "#{video_path}/musicvideo_compressed.mp4"
         ])
 
-        System.cmd("rm", [
-          "#{video_path}/musicvideo.mp4"
-        ])
+        # System.cmd("rm", [
+        #   "#{video_path}/musicvideo.mp4"
+        # ])
 
         upload_video_to_r2(track.audius_id)
 
         Track |> where(id: ^track.id) |> Repo.update_all(set: [has_music_video: true])
 
-        System.cmd("rm", [
-          "-rf",
-          track_path
-        ])
+        # System.cmd("rm", [
+        #   "-rf",
+        #   track_path
+        # ])
 
-        System.cmd("rm", [
-          "-rf",
-          video_path
-        ])
+        # System.cmd("rm", [
+        #   "-rf",
+        #   video_path
+        # ])
       end
     end
   end
