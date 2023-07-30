@@ -50,6 +50,8 @@ defmodule AudiusLive.Media do
         )
       get_beats = elem(aubio_call, 0) |> String.split("\t\n")
 
+      IO.inspect(get_beats)
+
       onset_times =
         Enum.take(get_beats, Enum.count(get_beats) - 1)
         |> Enum.map(&String.to_float/1)
