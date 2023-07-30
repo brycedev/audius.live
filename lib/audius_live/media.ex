@@ -55,8 +55,6 @@ defmodule AudiusLive.Media do
         get_beats = get_beats[0] |> String.split("\n") 
       end
 
-      IO.inspect(get_beats)
-
       onset_times =
         Enum.take(get_beats, Enum.count(get_beats) - 1)
         |> Enum.map(&String.to_float/1)
@@ -225,23 +223,23 @@ defmodule AudiusLive.Media do
           "#{video_path}/musicvideo_compressed.mp4"
         ])
 
-        # System.cmd("rm", [
-        #   "#{video_path}/musicvideo.mp4"
-        # ])
+        System.cmd("rm", [
+          "#{video_path}/musicvideo.mp4"
+        ])
 
         upload_video_to_r2(track.audius_id)
 
         Track |> where(id: ^track.id) |> Repo.update_all(set: [has_music_video: true])
 
-        # System.cmd("rm", [
-        #   "-rf",
-        #   track_path
-        # ])
+        System.cmd("rm", [
+          "-rf",
+          track_path
+        ])
 
-        # System.cmd("rm", [
-        #   "-rf",
-        #   video_path
-        # ])
+        System.cmd("rm", [
+          "-rf",
+          video_path
+        ])
       end
     end
   end
