@@ -8,6 +8,7 @@ function generateVideoMesh(tvScreen) {
   video.muted = true;
   video.autoplay = true;
   video.crossOrigin = "anonymous";
+  video.playsInline = true;
   video.loop = true;
   video.load();
   video.play();

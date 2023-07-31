@@ -177,15 +177,14 @@ function setupClock() {
   });
 
   const stop = () => {
+    video.muted = true;
     T.ticking = false;
-    video.loop = true;
     if (!video.paused) video.pause();
     setBumper();
   };
 
   const play = () => {
     T.ticking = true;
-    video.loop = false;
     if (video.paused) video.play();
   };
 
