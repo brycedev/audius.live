@@ -185,7 +185,6 @@ function setupClock() {
 
   const play = () => {
     T.ticking = true;
-    video.muted = false;
     video.loop = false;
     if (video.paused) video.play();
   };
@@ -226,12 +225,12 @@ function setupClock() {
   });
 
   window.addEventListener("click", (e) => {
-    play();
+    video.muted = false;
   });
 
   window.addEventListener("keydown", (e) => {
     if (e.key == " " || e.code == "Space" || e.code == "Enter") {
-      play();
+      video.muted = false;
     }
   });
 
