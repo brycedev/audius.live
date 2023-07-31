@@ -156,7 +156,6 @@ function setupPostprocessing() {
 }
 
 function setupEventListeners() {
-  // window.addEventListener("click", playVideo, false);
   window.addEventListener(
     "resize",
     function () {
@@ -224,6 +223,16 @@ function setupClock() {
     video.src = e.detail.url;
     video.load();
     play();
+  });
+
+  window.addEventListener("click", (e) => {
+    play();
+  });
+
+  window.addEventListener("keydown", (e) => {
+    if (e.key == " " || e.code == "Space" || e.code == "Enter") {
+      play();
+    }
   });
 
   liveSocket.connect();
